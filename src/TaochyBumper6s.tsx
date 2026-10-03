@@ -15,7 +15,7 @@ export const BUMPER_DURATION = 180;
 const LINE_2 = 50;
 const CTA_START = 100;
 
-const VOICE: Cue[] = [vo('b_intro', 1), vo('b_cta', CTA_START + 3)];
+const VOICE: Cue[] = [vo('b_intro', 2), vo('b_cta', CTA_START + 3)];
 
 const EFFECTS: Cue[] = [
 	sfx('impact', 0, 0.55),
@@ -58,10 +58,10 @@ export const TaochyBumper6s: React.FC<AdProps> = (props) => (
 			<PinnedLogo />
 		</Sequence>
 		<Shot from={0} duration={LINE_2} exit="left" camera={{from: {scale: 1.25, rx: 18}, to: {scale: 1, rx: 0}}}>
-			<Line a="Commerçants, artisans" b={'de La Réunion :'} highlight={['La Réunion']} />
+			<Line a="Commerçant à" b={'La\u00A0Réunion\u00A0?'} highlight={['La Réunion']} />
 		</Shot>
 		<Shot from={LINE_2} duration={CTA_START - LINE_2} enter="right" camera={{from: {scale: 1.1, rz: -4}, to: {scale: 1, rz: 0}}}>
-			<Line a="Plus de clients" b="grâce au digital." highlight={['clients', 'digital.']} />
+			<Line a="Plus de clients," b="sans prise de tête." highlight={['clients,', 'tête.']} />
 		</Shot>
 		<Sequence from={CTA_START}>
 			<CtaScene cta={props.cta} website={props.website} />

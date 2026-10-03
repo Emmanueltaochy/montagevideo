@@ -61,7 +61,7 @@ const Content: React.FC<{prefix: string; value: number; suffix: string; label: s
 	);
 	const punch = spring({frame: frame - COUNT_END, fps, config: {damping: 7, stiffness: 220}});
 	const burst = interpolate(frame, [COUNT_END, COUNT_END + 30], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
-	const detailIn = spring({frame: frame - 30, fps, config: {damping: 200}});
+	const detailIn = spring({frame: frame - 24, fps, config: {damping: 200}});
 
 	return (
 		<SafeArea style={{gap: 14}}>
@@ -78,7 +78,7 @@ const Content: React.FC<{prefix: string; value: number; suffix: string; label: s
 					padding: '10px 30px',
 				}}
 			>
-				RÉSULTAT CLIENT
+				RÉSULTATS CLIENTS
 			</div>
 			<div style={{position: 'relative'}}>
 				{frame >= COUNT_END &&
@@ -122,7 +122,7 @@ const Content: React.FC<{prefix: string; value: number; suffix: string; label: s
 					{suffix}
 				</div>
 			</div>
-			<SlamWords text={label} fontSize={76} delay={20} stagger={2} />
+			<SlamWords text={label} fontSize={76} delay={14} stagger={2} />
 			<div
 				style={{
 					opacity: detailIn,
@@ -140,13 +140,122 @@ const Content: React.FC<{prefix: string; value: number; suffix: string; label: s
 	);
 };
 
-// 20–25 s : le chiffre bascule en 3D, compte jusqu'au résultat et explose en particules.
-export const StatScene: React.FC<{prefix: string; value: number; suffix: string; label: string; detail: string}> = (props) => (
+export const STAT_SHOT_2 = 58;
+export const PROOF_3_AT = 30;
+
+const ProofCard: React.FC<{delay: number; detail: string; from: 'left' | 'right'; children: React.ReactNode}> = ({
+	delay,
+	detail,
+	from,
+	children,
+}) => {
+	const frame = useCurrentFrame();
+	const {fps} = useVideoConfig();
+	const s = spring({frame: frame - delay, fps, config: {damping: 12, stiffness: 170, mass: 0.7}});
+	const side = from === 'left' ? -1 : 1;
+	return (
+		<div
+			style={{
+				width: 760,
+				height: 420,
+				borderRadius: 32,
+				background: 'linear-gradient(160deg, #1a1a1a, #0b0b0b)',
+				border: `3px solid ${COLORS.gold}`,
+				boxShadow: '0 30px 90px rgba(206,173,111,0.25)',
+				padding: '44px 50px',
+				boxSizing: 'border-box',
+				display: 'flex',
+				flexDirection: 'column',
+				justifyContent: 'space-between',
+				opacity: Math.min(1, s * 1.5),
+				transform: `translateX(${(1 - s) * side * 500}px) rotateY(${(1 - s) * side * -40}deg)`,
+			}}
+		>
+			{children}
+			<div
+				style={{
+					alignSelf: 'flex-start',
+					fontFamily: BODY_FONT,
+					fontWeight: 700,
+					fontSize: 34,
+					color: COLORS.black,
+					background: COLORS.gold,
+					borderRadius: 999,
+					padding: '8px 26px',
+				}}
+			>
+				{detail}
+			</div>
+		</div>
+	);
+};
+
+// Plan 2 : les deux autres preuves (gîte, VTC), synchronisées avec la voix off.
+const OtherProofs: React.FC<{value: string; label: string; detail: string; quote: string; quoteDetail: string}> = ({
+	value,
+	label,
+	detail,
+	quote,
+	quoteDetail,
+}) => (
+	<SafeArea style={{flexDirection: 'row', gap: 60, perspective: 1600}}>
+		<ProofCard delay={0} detail={detail} from="left">
+			<div>
+				<div
+					style={{
+						fontFamily: TITLE_FONT,
+						fontWeight: 900,
+						fontSize: 96,
+						lineHeight: 1,
+						background: GOLD_GRADIENT,
+						WebkitBackgroundClip: 'text',
+						backgroundClip: 'text',
+						color: 'transparent',
+					}}
+				>
+					{value}
+				</div>
+				<div style={{fontFamily: TITLE_FONT, fontWeight: 800, fontSize: 72, color: COLORS.white}}>{label}</div>
+			</div>
+		</ProofCard>
+		<ProofCard delay={PROOF_3_AT} detail={quoteDetail} from="right">
+			<div style={{display: 'flex', flexDirection: 'column', gap: 6}}>
+				<div style={{fontFamily: TITLE_FONT, fontWeight: 900, fontSize: 120, lineHeight: 0.6, color: COLORS.gold}}>“</div>
+				<div style={{fontFamily: TITLE_FONT, fontWeight: 800, fontSize: 60, lineHeight: 1.15, color: COLORS.white}}>{quote}</div>
+			</div>
+		</ProofCard>
+	</SafeArea>
+);
+
+type StatProps = {
+	prefix: string;
+	value: number;
+	suffix: string;
+	label: string;
+	detail: string;
+	proof2Value: string;
+	proof2Label: string;
+	proof2Detail: string;
+	proof3Quote: string;
+	proof3Detail: string;
+};
+
+// 20–25 s : trois vrais résultats clients — le chiffre bascule en 3D et explose, puis deux cartes de preuve.
+export const StatScene: React.FC<StatProps> = (p) => (
 	<AbsoluteFill>
 		<MotionAccents seed="stat" ghostText="RÉSULTATS" />
 		<GrowthChart />
-		<Shot from={0} duration={150} enter="up" camera={{from: {scale: 1.35, rz: -5}, to: {scale: 1.02, rz: 1}}}>
-			<Content {...props} />
+		<Shot from={0} duration={STAT_SHOT_2} enter="up" exit="zoom" camera={{from: {scale: 1.35, rz: -5}, to: {scale: 1.02, rz: 1}}}>
+			<Content prefix={p.prefix} value={p.value} suffix={p.suffix} label={p.label} detail={p.detail} />
+		</Shot>
+		<Shot from={STAT_SHOT_2} duration={150 - STAT_SHOT_2} enter="zoom" camera={{from: {ry: 14, scale: 1.1}, to: {ry: -4, scale: 1}}}>
+			<OtherProofs
+				value={p.proof2Value}
+				label={p.proof2Label}
+				detail={p.proof2Detail}
+				quote={p.proof3Quote}
+				quoteDetail={p.proof3Detail}
+			/>
 		</Shot>
 	</AbsoluteFill>
 );

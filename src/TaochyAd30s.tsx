@@ -8,7 +8,7 @@ import type {AdProps} from './props';
 import {CtaScene} from './scenes/CtaScene';
 import {HOOK_SHAKE, HOOK_SHOT_2, HookScene} from './scenes/HookScene';
 import {SERVICE_SHOT_B, ServiceScene} from './scenes/ServiceScene';
-import {COUNT_END, StatScene} from './scenes/StatScene';
+import {COUNT_END, PROOF_3_AT, STAT_SHOT_2, StatScene} from './scenes/StatScene';
 import {BrowserMock} from './visuals/BrowserMock';
 import {ReunionMap} from './visuals/ReunionMap';
 import {SocialFeed} from './visuals/SocialFeed';
@@ -23,8 +23,7 @@ const TRANSITIONS: TransitionType[] = ['wipe', 'iris', 'slices', 'streaks', 'fla
 const V = (f: number) => SERVICE_SHOT_B + Math.round(f / 1.45);
 
 const VOICE: Cue[] = [
-	vo('hook1', 2),
-	vo('hook2', HOOK_SHOT_2 + 4),
+	vo('hook', 2),
 	vo('web', SCENE + 3),
 	vo('social', SCENE * 2 + 3),
 	vo('ads', SCENE * 3 + 6),
@@ -68,6 +67,10 @@ const EFFECTS: Cue[] = [
 	sfx('pop', SCENE * 4 + 2, 0.4),
 	sfx('riser', SCENE * 4 + COUNT_END - 48, 0.35),
 	sfx('impact', SCENE * 4 + COUNT_END, 0.55),
+	sfx('whoosh', SCENE * 4 + STAT_SHOT_2 - 11, 0.45),
+	sfx('pop', SCENE * 4 + STAT_SHOT_2 + 2, 0.4),
+	sfx('whoosh', SCENE * 4 + STAT_SHOT_2 + PROOF_3_AT - 8, 0.35),
+	sfx('pop', SCENE * 4 + STAT_SHOT_2 + PROOF_3_AT + 4, 0.4),
 	// Appel à l'action
 	sfx('impact', SCENE * 5, 0.5),
 	sfx('pop', SCENE * 5 + 4, 0.45),
@@ -84,8 +87,8 @@ export const TaochyAd30s: React.FC<AdProps> = (props) => {
 			title="Création de site web"
 			ghost="WEB"
 			highlight={['site', 'web']}
-			tagline="Un site pro qui attire des clients"
-			features={['Design moderne', 'Adapté au mobile', 'Visible sur Google']}
+			tagline="Un site qui vend pour vous 24h/24"
+			features={['Réservations & devis en ligne', 'Parfait sur mobile', 'Trouvé sur Google']}
 			angles={{
 				titleEnter: 'zoom',
 				cut: 'zoom',
@@ -100,8 +103,8 @@ export const TaochyAd30s: React.FC<AdProps> = (props) => {
 			title="Gestion des réseaux sociaux"
 			ghost="SOCIAL"
 			highlight={['réseaux', 'sociaux']}
-			tagline="On publie, vous vendez"
-			features={['Visuels sur mesure', 'Publications régulières', 'Stories & Reels']}
+			tagline="Vous travaillez, on publie"
+			features={['Visuels pros de vos produits', 'Publications régulières', "Une communauté qui s'engage"]}
 			angles={{
 				titleEnter: 'up',
 				cut: 'left',
@@ -116,8 +119,8 @@ export const TaochyAd30s: React.FC<AdProps> = (props) => {
 			title="Publicité en ligne"
 			ghost="ADS"
 			highlight={['publicité']}
-			tagline="Touchez les clients du 974"
-			features={['Facebook & Instagram', 'Google Ads', 'Ciblage local']}
+			tagline="Les bons clients, au bon endroit"
+			features={['Facebook, Instagram & Google', 'De Saint-Denis à Saint-Pierre', 'Budget maîtrisé']}
 			angles={{
 				titleEnter: 'left',
 				cut: 'up',
@@ -133,6 +136,11 @@ export const TaochyAd30s: React.FC<AdProps> = (props) => {
 			suffix={props.statSuffix}
 			label={props.statLabel}
 			detail={props.statDetail}
+			proof2Value={props.proof2Value}
+			proof2Label={props.proof2Label}
+			proof2Detail={props.proof2Detail}
+			proof3Quote={props.proof3Quote}
+			proof3Detail={props.proof3Detail}
 		/>,
 		<CtaScene key="cta" cta={props.cta} website={props.website} />,
 	];

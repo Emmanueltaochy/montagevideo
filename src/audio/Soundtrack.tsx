@@ -11,15 +11,14 @@ const MUSIC_UNDER_VOICE = 0.14;
 
 // Durée des voix off en images (30 fps), pour baisser la musique pendant qu'elles parlent.
 const VO_FRAMES: Record<string, number> = {
-	hook1: 43,
-	hook2: 48,
-	web: 133,
-	social: 123,
-	ads: 99,
-	stat: 111,
-	cta: 126,
-	b_intro: 92,
-	b_cta: 71,
+	hook: 124,
+	web: 137,
+	social: 99,
+	ads: 123,
+	stat: 140,
+	cta: 112,
+	b_intro: 81,
+	b_cta: 72,
 };
 
 export const vo = (name: keyof typeof VO_FRAMES & string, at: number): Cue => ({src: `audio/vo/${name}.wav`, at, volume: VOICE_VOLUME});

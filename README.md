@@ -20,8 +20,7 @@ npm run render     # génère out/taochy-ad-30s.mp4 et out/taochy-bumper-6s.mp4
 Dans le Studio, onglet **Props** à droite (ou dans `src/props.ts`) :
 
 - `website`, `cta` : site web et appel à l'action
-- `statPrefix`, `statValue`, `statSuffix`, `statLabel`, `statDetail` : le résultat client de la scène 20–25 s.
-  **La valeur actuelle (+40 % de réservations) est un exemple à remplacer par un vrai résultat avant diffusion.**
+- `stat*` et `proof*` : les trois résultats clients de la scène 20–25 s (menuiserie, gîte, VTC)
 - `showSafeZone` : affiche en rouge la bande du bas réservée aux contrôles YouTube
 
 Les autres textes sont dans `src/scenes/` et `src/TaochyAd30s.tsx`.
@@ -46,6 +45,6 @@ public/
 Tout le son est dans `public/audio/` et placé image par image dans `src/TaochyAd30s.tsx` / `src/TaochyBumper6s.tsx` (listes `VOICE` et `EFFECTS`). La musique baisse automatiquement pendant la voix off. Chaque piste peut être coupée depuis les Props du Studio (`music`, `voiceOver`, `soundEffects`).
 
 - **Musique et bruitages** (`music-*.wav`, `sfx/`) : synthétisés par `scripts/generate_audio.py` — créations originales, libres de droits. Pour les régénérer : `pip install numpy scipy && python3 scripts/generate_audio.py`.
-- **Voix off** (`vo/`) : synthèse vocale [Piper](https://github.com/rhasspy/piper), voix française « siwis » (licence CC-BY 4.0 : mention requise, voir `CREDITS.md`). Le nom de l'agence est écrit phonétiquement (« Tao-chi Eille-djeunn-ci ») pour être prononcé correctement.
+- **Voix off** (`vo/`) : voix féminine française générée avec [Chatterbox](https://github.com/resemble-ai/chatterbox) (Resemble AI, licence MIT), à partir d'une voix de référence produite par [Piper](https://github.com/rhasspy/piper) (voix « siwis », licence CC-BY 4.0 : mention requise, voir `CREDITS.md`).
 
 Pour remplacer la voix off par un enregistrement professionnel : déposer les fichiers dans `public/audio/vo/` sous les mêmes noms et mettre à jour leur durée (en images) dans `src/audio/Soundtrack.tsx`.
