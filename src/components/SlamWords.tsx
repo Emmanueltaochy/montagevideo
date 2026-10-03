@@ -18,6 +18,9 @@ export const SlamWords: React.FC<{
 	const frame = useCurrentFrame();
 	const {fps} = useVideoConfig();
 	const hl = highlight.map(normalize);
+	// Les deux derniers mots restent ensemble : jamais de mot seul sur la dernière ligne.
+	const words = text.split(' ');
+	const groups = words.length >= 3 ? [...words.slice(0, -2).map((w) => [w]), words.slice(-2)] : words.map((w) => [w]);
 
 	return (
 		<div
@@ -34,21 +37,25 @@ export const SlamWords: React.FC<{
 				...style,
 			}}
 		>
-			{text.split(' ').map((word, i) => {
-				const s = spring({frame: frame - delay - i * stagger, fps, config: {damping: 11, stiffness: 220, mass: 0.5}});
-				const on = hl.includes(normalize(word));
+			{groups.map((group, g) => {
+				const s = spring({frame: frame - delay - g * stagger, fps, config: {damping: 11, stiffness: 220, mass: 0.5}});
 				return (
 					<span
-						key={i}
+						key={g}
 						style={{
 							display: 'inline-block',
+							whiteSpace: 'nowrap',
 							opacity: Math.min(1, s * 1.6),
-							transform: `scale(${2.4 - 1.4 * s}) rotate(${(1 - s) * (i % 2 ? 8 : -8)}deg)`,
+							transform: `scale(${2.4 - 1.4 * s}) rotate(${(1 - s) * (g % 2 ? 8 : -8)}deg)`,
 							filter: `blur(${Math.max(0, 1 - s) * 12}px)`,
-							color: on ? COLORS.gold : COLORS.white,
 						}}
 					>
-						{word}
+						{group.map((word, w) => (
+							<span key={w} style={{color: hl.includes(normalize(word)) ? COLORS.gold : COLORS.white}}>
+								{w > 0 ? '\u00A0' : ''}
+								{word}
+							</span>
+						))}
 					</span>
 				);
 			})}

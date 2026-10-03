@@ -29,3 +29,11 @@ export const BODY_FONT = 'Inter';
 
 loadFont({family: TITLE_FONT, url: staticFile('fonts/Montserrat.woff2'), weight: '700 900'});
 loadFont({family: BODY_FONT, url: staticFile('fonts/Inter.woff2'), weight: '400 700'});
+
+// Format vertical (Reels Instagram) : zones à laisser libres pour l'interface d'Instagram.
+export const REEL = {width: 1080, height: 1920};
+export const REEL_SAFE = {
+	top: 270, // nom du compte, « Sponsorisé »
+	bottom: 640, // légende, bouton d'appel à l'action
+	side: 70, // icônes j'aime / commentaire / partage à droite
+};

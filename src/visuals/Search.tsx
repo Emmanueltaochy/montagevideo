@@ -76,20 +76,20 @@ const RESULTS = [
 ];
 
 // Résultats de recherche : vos concurrents apparaissent, pas vous (accroche, plan 2).
-export const CompetitorResults: React.FC<{delay?: number}> = ({delay = 0}) => {
+export const CompetitorResults: React.FC<{delay?: number; vertical?: boolean}> = ({delay = 0, vertical = false}) => {
 	const frame = useCurrentFrame() - delay;
 	const {fps} = useVideoConfig();
 
 	return (
-		<div style={{display: 'flex', gap: 28}}>
+		<div style={{display: 'flex', flexDirection: vertical ? 'column' : 'row', gap: vertical ? 22 : 28}}>
 			{RESULTS.map((r, i) => {
 				const s = pop(frame, fps, i * 5);
 				return (
 					<div
 						key={r.name}
 						style={{
-							width: 420,
-							height: 150,
+							width: vertical ? 760 : 420,
+							height: vertical ? 130 : 150,
 							borderRadius: 22,
 							background: '#141414',
 							border: '2px solid #2e2e2e',

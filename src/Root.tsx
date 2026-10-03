@@ -3,7 +3,7 @@ import {Composition} from 'remotion';
 import {DEFAULT_PROPS} from './props';
 import {AD_DURATION, TaochyAd30s} from './TaochyAd30s';
 import {BUMPER_DURATION, TaochyBumper6s} from './TaochyBumper6s';
-import {VIDEO} from './theme';
+import {REEL, VIDEO} from './theme';
 
 export const RemotionRoot: React.FC = () => (
 	<>
@@ -14,6 +14,15 @@ export const RemotionRoot: React.FC = () => (
 			fps={VIDEO.fps}
 			width={VIDEO.width}
 			height={VIDEO.height}
+			defaultProps={DEFAULT_PROPS}
+		/>
+		<Composition
+			id="TaochyReel30s"
+			component={TaochyAd30s}
+			durationInFrames={AD_DURATION}
+			fps={VIDEO.fps}
+			width={REEL.width}
+			height={REEL.height}
 			defaultProps={DEFAULT_PROPS}
 		/>
 		<Composition

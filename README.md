@@ -1,18 +1,21 @@
 # TAOCHY AGENCY — Publicités YouTube (Remotion)
 
-Deux vidéos 1920×1080, 30 fps :
+Trois vidéos à 30 fps :
 
-| Composition | Durée | Usage |
-|---|---|---|
-| `TaochyAd30s` | 30 s | Annonce désactivable après 5 s (in-stream) |
-| `TaochyBumper6s` | 6 s | Annonce « bumper » non désactivable |
+| Composition | Format | Durée | Usage |
+|---|---|---|---|
+| `TaochyAd30s` | 1920×1080 | 30 s | YouTube : annonce désactivable après 5 s (in-stream) |
+| `TaochyBumper6s` | 1920×1080 | 6 s | YouTube : annonce « bumper » non désactivable |
+| `TaochyReel30s` | 1080×1920 | 30 s | Instagram Reels (même montage, mise en page verticale) |
+
+La version verticale réutilise les mêmes scènes : la mise en page s'adapte à l'orientation (`src/layout.ts`). Le contenu reste hors des zones de l'interface Instagram (270 px en haut, 640 px en bas, 70 px sur les côtés — voir `REEL_SAFE` dans `src/theme.ts`).
 
 ## Démarrer
 
 ```bash
 npm install
 npm run dev        # ouvre le Studio Remotion sur http://localhost:3000
-npm run render     # génère out/taochy-ad-30s.mp4 et out/taochy-bumper-6s.mp4
+npm run render     # génère les 3 vidéos dans out/
 ```
 
 ## Modifier les textes
@@ -21,7 +24,7 @@ Dans le Studio, onglet **Props** à droite (ou dans `src/props.ts`) :
 
 - `website`, `cta` : site web et appel à l'action
 - `stat*` et `proof*` : les trois résultats clients de la scène 20–25 s (menuiserie, gîte, VTC)
-- `showSafeZone` : affiche en rouge la bande du bas réservée aux contrôles YouTube
+- `showSafeZone` : affiche en rouge les zones réservées à l'interface YouTube ou Instagram
 
 Les autres textes sont dans `src/scenes/` et `src/TaochyAd30s.tsx`.
 

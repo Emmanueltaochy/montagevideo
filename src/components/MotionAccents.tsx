@@ -1,5 +1,5 @@
 import React from 'react';
-import {AbsoluteFill, random, useCurrentFrame} from 'remotion';
+import {AbsoluteFill, random, useCurrentFrame, useVideoConfig} from 'remotion';
 import {COLORS, TITLE_FONT} from '../theme';
 
 const PARTICLES = 28;
@@ -7,6 +7,7 @@ const PARTICLES = 28;
 // Habillage motion design permanent : particules, anneaux en rotation, croix, texte géant en fond.
 export const MotionAccents: React.FC<{seed: string; ghostText?: string}> = ({seed, ghostText}) => {
 	const frame = useCurrentFrame();
+	const {width, height} = useVideoConfig();
 
 	return (
 		<AbsoluteFill style={{pointerEvents: 'none', overflow: 'hidden'}}>
@@ -14,7 +15,7 @@ export const MotionAccents: React.FC<{seed: string; ghostText?: string}> = ({see
 				<div
 					style={{
 						position: 'absolute',
-						top: 120,
+						top: height > width ? height * 0.42 : 120,
 						left: 0,
 						whiteSpace: 'nowrap',
 						fontFamily: TITLE_FONT,
@@ -50,9 +51,9 @@ export const MotionAccents: React.FC<{seed: string; ghostText?: string}> = ({see
 				);
 			})}
 			{Array.from({length: PARTICLES}).map((_, i) => {
-				const x = random(`${seed}-x-${i}`) * 1920;
+				const x = random(`${seed}-x-${i}`) * width;
 				const speed = 0.6 + random(`${seed}-s-${i}`) * 2.2;
-				const y = 900 - ((random(`${seed}-y-${i}`) * 1000 + frame * speed * 3) % 1000);
+				const y = height - 180 - ((random(`${seed}-y-${i}`) * height + frame * speed * 3) % height);
 				const size = 3 + random(`${seed}-z-${i}`) * 7;
 				const isCross = i % 7 === 0;
 				return isCross ? (

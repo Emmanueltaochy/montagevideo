@@ -5,6 +5,7 @@ import {MotionAccents} from '../components/MotionAccents';
 import {SafeArea} from '../components/SafeArea';
 import {type Move, Shot} from '../components/Shot';
 import {SlamWords} from '../components/SlamWords';
+import {useResponsive} from '../layout';
 import {BODY_FONT, COLORS, TITLE_FONT} from '../theme';
 import {pop} from '../visuals/pop';
 
@@ -24,6 +25,7 @@ const TitleCard: React.FC<{index: string; title: string; highlight?: string[]}> 
 	const {fps} = useVideoConfig();
 	const flip = spring({frame, fps, config: {damping: 14, stiffness: 150}});
 	const bar = interpolate(frame, [10, 24], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
+	const r = useResponsive();
 
 	return (
 		<SafeArea style={{gap: 10}}>
@@ -31,7 +33,7 @@ const TitleCard: React.FC<{index: string; title: string; highlight?: string[]}> 
 				style={{
 					fontFamily: TITLE_FONT,
 					fontWeight: 900,
-					fontSize: 210,
+					fontSize: r(210, 240),
 					lineHeight: 1,
 					color: 'transparent',
 					WebkitTextStroke: `4px ${COLORS.gold}`,
@@ -40,7 +42,7 @@ const TitleCard: React.FC<{index: string; title: string; highlight?: string[]}> 
 			>
 				{index}
 			</div>
-			<SlamWords text={title} fontSize={118} highlight={highlight} delay={4} stagger={3} />
+			<SlamWords text={title} fontSize={r(118, 112)} highlight={highlight} delay={4} stagger={3} />
 			<div style={{display: 'flex', gap: 14, marginTop: 18}}>
 				{[0, 1, 2].map((i) => (
 					<div
@@ -69,10 +71,13 @@ const Detail: React.FC<{index: string; title: string; tagline: string; features:
 	const frame = useCurrentFrame();
 	const {fps} = useVideoConfig();
 	const head = pop(frame, fps, 0);
+	const r = useResponsive();
+	// En vertical, l'animation passe sous le texte, réduite.
+	const visualScale = r(1, 0.66);
 
 	return (
-		<SafeArea style={{flexDirection: 'row', justifyContent: 'space-between', gap: 50}}>
-			<div style={{width: 800, display: 'flex', flexDirection: 'column', gap: 22}}>
+		<SafeArea style={{flexDirection: r('row', 'column'), justifyContent: r('space-between', 'center'), gap: r(50, 24)}}>
+			<div style={{width: r(800, 940), display: 'flex', flexDirection: 'column', gap: r(22, 16)}}>
 				<div
 					style={{
 						display: 'flex',
@@ -89,7 +94,7 @@ const Detail: React.FC<{index: string; title: string; tagline: string; features:
 					<span style={{background: COLORS.gold, color: COLORS.black, borderRadius: 10, padding: '4px 14px'}}>{index}</span>
 					{title}
 				</div>
-				<SlamWords text={tagline} fontSize={80} align="flex-start" delay={3} stagger={2} />
+				<SlamWords text={tagline} fontSize={r(80, 76)} align="flex-start" delay={3} stagger={2} />
 				<div style={{display: 'flex', flexDirection: 'column', gap: 14, marginTop: 10}}>
 					{features.map((f, i) => {
 						const s = pop(frame, fps, 14 + i * 6);
@@ -131,7 +136,24 @@ const Detail: React.FC<{index: string; title: string; tagline: string; features:
 					})}
 				</div>
 			</div>
-			<div style={{width: 780, height: 640, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>{visual}</div>
+			<div style={{width: 780 * visualScale, height: 640 * visualScale, position: 'relative'}}>
+				<div
+					style={{
+						position: 'absolute',
+						left: 0,
+						top: 0,
+						width: 780,
+						height: 640,
+						display: 'flex',
+						alignItems: 'center',
+						justifyContent: 'center',
+						transform: `scale(${visualScale})`,
+						transformOrigin: 'top left',
+					}}
+				>
+					{visual}
+				</div>
+			</div>
 		</SafeArea>
 	);
 };

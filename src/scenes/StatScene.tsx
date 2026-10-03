@@ -4,6 +4,7 @@ import {MotionAccents} from '../components/MotionAccents';
 import {SafeArea} from '../components/SafeArea';
 import {Shot} from '../components/Shot';
 import {SlamWords} from '../components/SlamWords';
+import {useLayout, useResponsive} from '../layout';
 import {BODY_FONT, COLORS, GOLD_GRADIENT, TITLE_FONT} from '../theme';
 
 export const COUNT_END = 34;
@@ -14,13 +15,14 @@ const CHART = [0.1, 0.18, 0.15, 0.3, 0.27, 0.45, 0.42, 0.62, 0.7, 0.92];
 const GrowthChart: React.FC = () => {
 	const frame = useCurrentFrame();
 	const p = interpolate(frame, [0, 40], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp', easing: Easing.out(Easing.quad)});
-	const w = 1700;
-	const h = 520;
+	const l = useLayout();
+	const w = l.width - 220;
+	const h = l.portrait ? 700 : 520;
 	const pts = CHART.map((v, i) => [(i / (CHART.length - 1)) * w, h - v * h] as const);
 	const line = pts.map(([x, y], i) => `${i ? 'L' : 'M'} ${x} ${y}`).join(' ');
 
 	return (
-		<svg width={w} height={h} style={{position: 'absolute', left: 110, top: 200, opacity: 0.35, overflow: 'visible'}}>
+		<svg width={w} height={h} style={{position: 'absolute', left: 110, top: l.top + (l.portrait ? 150 : 200), opacity: 0.35, overflow: 'visible'}}>
 			<defs>
 				<linearGradient id="chart-fill" x1="0" y1="0" x2="0" y2="1">
 					<stop offset="0%" stopColor={COLORS.gold} stopOpacity={0.6} />
@@ -62,6 +64,7 @@ const Content: React.FC<{prefix: string; value: number; suffix: string; label: s
 	const punch = spring({frame: frame - COUNT_END, fps, config: {damping: 7, stiffness: 220}});
 	const burst = interpolate(frame, [COUNT_END, COUNT_END + 30], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
 	const detailIn = spring({frame: frame - 24, fps, config: {damping: 200}});
+	const r = useResponsive();
 
 	return (
 		<SafeArea style={{gap: 14}}>
@@ -107,7 +110,7 @@ const Content: React.FC<{prefix: string; value: number; suffix: string; label: s
 					style={{
 						fontFamily: TITLE_FONT,
 						fontWeight: 900,
-						fontSize: 300,
+						fontSize: r(300, 270),
 						lineHeight: 1,
 						background: GOLD_GRADIENT,
 						WebkitBackgroundClip: 'text',
@@ -122,7 +125,7 @@ const Content: React.FC<{prefix: string; value: number; suffix: string; label: s
 					{suffix}
 				</div>
 			</div>
-			<SlamWords text={label} fontSize={76} delay={14} stagger={2} />
+			<SlamWords text={label} fontSize={r(76, 80)} delay={14} stagger={2} />
 			<div
 				style={{
 					opacity: detailIn,
@@ -153,11 +156,12 @@ const ProofCard: React.FC<{delay: number; detail: string; from: 'left' | 'right'
 	const {fps} = useVideoConfig();
 	const s = spring({frame: frame - delay, fps, config: {damping: 12, stiffness: 170, mass: 0.7}});
 	const side = from === 'left' ? -1 : 1;
+	const r = useResponsive();
 	return (
 		<div
 			style={{
-				width: 760,
-				height: 420,
+				width: r(760, 900),
+				height: r(420, 380),
 				borderRadius: 32,
 				background: 'linear-gradient(160deg, #1a1a1a, #0b0b0b)',
 				border: `3px solid ${COLORS.gold}`,
@@ -197,35 +201,38 @@ const OtherProofs: React.FC<{value: string; label: string; detail: string; quote
 	detail,
 	quote,
 	quoteDetail,
-}) => (
-	<SafeArea style={{flexDirection: 'row', gap: 60, perspective: 1600}}>
-		<ProofCard delay={0} detail={detail} from="left">
-			<div>
-				<div
-					style={{
-						fontFamily: TITLE_FONT,
-						fontWeight: 900,
-						fontSize: 96,
-						lineHeight: 1,
-						background: GOLD_GRADIENT,
-						WebkitBackgroundClip: 'text',
-						backgroundClip: 'text',
-						color: 'transparent',
-					}}
-				>
-					{value}
+}) => {
+	const r = useResponsive();
+	return (
+		<SafeArea style={{flexDirection: r('row', 'column'), gap: r(60, 40), perspective: 1600}}>
+			<ProofCard delay={0} detail={detail} from="left">
+				<div>
+					<div
+						style={{
+							fontFamily: TITLE_FONT,
+							fontWeight: 900,
+							fontSize: 96,
+							lineHeight: 1,
+							background: GOLD_GRADIENT,
+							WebkitBackgroundClip: 'text',
+							backgroundClip: 'text',
+							color: 'transparent',
+						}}
+					>
+						{value}
+					</div>
+					<div style={{fontFamily: TITLE_FONT, fontWeight: 800, fontSize: 72, color: COLORS.white}}>{label}</div>
 				</div>
-				<div style={{fontFamily: TITLE_FONT, fontWeight: 800, fontSize: 72, color: COLORS.white}}>{label}</div>
-			</div>
-		</ProofCard>
-		<ProofCard delay={PROOF_3_AT} detail={quoteDetail} from="right">
-			<div style={{display: 'flex', flexDirection: 'column', gap: 6}}>
-				<div style={{fontFamily: TITLE_FONT, fontWeight: 900, fontSize: 120, lineHeight: 0.6, color: COLORS.gold}}>“</div>
-				<div style={{fontFamily: TITLE_FONT, fontWeight: 800, fontSize: 60, lineHeight: 1.15, color: COLORS.white}}>{quote}</div>
-			</div>
-		</ProofCard>
-	</SafeArea>
-);
+			</ProofCard>
+			<ProofCard delay={PROOF_3_AT} detail={quoteDetail} from="right">
+				<div style={{display: 'flex', flexDirection: 'column', gap: 6}}>
+					<div style={{fontFamily: TITLE_FONT, fontWeight: 900, fontSize: 120, lineHeight: 0.6, color: COLORS.gold}}>“</div>
+					<div style={{fontFamily: TITLE_FONT, fontWeight: 800, fontSize: 60, lineHeight: 1.15, color: COLORS.white}}>{quote}</div>
+				</div>
+			</ProofCard>
+		</SafeArea>
+	);
+};
 
 type StatProps = {
 	prefix: string;
