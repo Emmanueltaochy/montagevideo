@@ -41,12 +41,11 @@ public/
   fonts/                # Montserrat et Inter (licence SIL OFL)
 ```
 
-## Musique
+## Son
 
-Déposer un fichier libre de droits dans `public/` (par ex. `musique.mp3`), puis ajouter dans `TaochyAd30s.tsx` et `TaochyBumper6s.tsx` :
+Tout le son est dans `public/audio/` et placé image par image dans `src/TaochyAd30s.tsx` / `src/TaochyBumper6s.tsx` (listes `VOICE` et `EFFECTS`). La musique baisse automatiquement pendant la voix off. Chaque piste peut être coupée depuis les Props du Studio (`music`, `voiceOver`, `soundEffects`).
 
-```tsx
-import {Audio, staticFile} from 'remotion';
-// ...
-<Audio src={staticFile('musique.mp3')} />
-```
+- **Musique et bruitages** (`music-*.wav`, `sfx/`) : synthétisés par `scripts/generate_audio.py` — créations originales, libres de droits. Pour les régénérer : `pip install numpy scipy && python3 scripts/generate_audio.py`.
+- **Voix off** (`vo/`) : synthèse vocale [Piper](https://github.com/rhasspy/piper), voix française « siwis » (licence CC-BY 4.0 : mention requise, voir `CREDITS.md`). Le nom de l'agence est écrit phonétiquement (« Tao-chi Éïdjeunsi ») pour être prononcé correctement.
+
+Pour remplacer la voix off par un enregistrement professionnel : déposer les fichiers dans `public/audio/vo/` sous les mêmes noms et mettre à jour leur durée (en images) dans `src/audio/Soundtrack.tsx`.

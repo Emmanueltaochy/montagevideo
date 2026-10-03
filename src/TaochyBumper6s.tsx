@@ -1,5 +1,6 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, Sequence, spring, useCurrentFrame, useVideoConfig} from 'remotion';
+import {type Cue, sfx, Soundtrack, vo} from './audio/Soundtrack';
 import {AnimatedWords} from './components/AnimatedWords';
 import {Background} from './components/Background';
 import {GoldWipe, WIPE_DURATION} from './components/GoldWipe';
@@ -11,6 +12,17 @@ import {CtaScene} from './scenes/CtaScene';
 export const BUMPER_DURATION = 180;
 const LINE_2 = 58;
 const CTA_START = 105;
+
+const VOICE: Cue[] = [vo('b_intro', 1), vo('b_cta', 95)];
+
+const EFFECTS: Cue[] = [
+	sfx('impact', 0, 0.55),
+	sfx('shimmer', 60, 0.3),
+	sfx('whoosh', CTA_START - 12, 0.55),
+	sfx('impact', CTA_START, 0.45),
+	sfx('pop', CTA_START + 5, 0.45),
+	sfx('shimmer', CTA_START + 12, 0.35),
+];
 
 const fadeOut = (frame: number, end: number) =>
 	interpolate(frame, [end - 8, end], [1, 0], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
@@ -56,6 +68,14 @@ export const TaochyBumper6s: React.FC<AdProps> = (props) => (
 		<Sequence from={CTA_START - WIPE_DURATION / 2} durationInFrames={WIPE_DURATION}>
 			<GoldWipe />
 		</Sequence>
+		<Soundtrack
+			music="audio/music-6s.wav"
+			voice={VOICE}
+			effects={EFFECTS}
+			withMusic={props.music}
+			withVoice={props.voiceOver}
+			withEffects={props.soundEffects}
+		/>
 		{props.showSafeZone && <SafeZoneOverlay />}
 	</AbsoluteFill>
 );

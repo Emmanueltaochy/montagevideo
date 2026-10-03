@@ -8,6 +8,10 @@ export type AdProps = {
 	statSuffix: string;
 	statLabel: string;
 	statDetail: string;
+	// Pistes audio activables séparément.
+	music: boolean;
+	voiceOver: boolean;
+	soundEffects: boolean;
 	// Affiche la zone réservée aux contrôles YouTube (pour vérifier la mise en page).
 	showSafeZone: boolean;
 };
@@ -20,5 +24,8 @@ export const DEFAULT_PROPS: AdProps = {
 	statSuffix: '%',
 	statLabel: 'de réservations en 3 mois',
 	statDetail: 'pour un commerce accompagné à La Réunion',
+	music: true,
+	voiceOver: true,
+	soundEffects: true,
 	showSafeZone: false,
 };
