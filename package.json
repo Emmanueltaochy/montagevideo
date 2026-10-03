@@ -1,0 +1,24 @@
+{
+  "name": "taochy-youtube-ads",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Publicités YouTube de TAOCHY AGENCY réalisées avec Remotion",
+  "scripts": {
+    "dev": "remotion studio",
+    "render": "remotion render TaochyAd30s out/taochy-ad-30s.mp4 && remotion render TaochyBumper6s out/taochy-bumper-6s.mp4",
+    "render:30s": "remotion render TaochyAd30s out/taochy-ad-30s.mp4",
+    "render:6s": "remotion render TaochyBumper6s out/taochy-bumper-6s.mp4",
+    "lint": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@remotion/cli": "^4.0.532",
+    "@remotion/fonts": "^4.0.532",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "remotion": "^4.0.532"
+  },
+  "devDependencies": {
+    "@types/react": "^19.3.0",
+    "typescript": "^7.0.2"
+  }
+}
