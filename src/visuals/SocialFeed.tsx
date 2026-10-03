@@ -16,7 +16,13 @@ const HEARTS = [
 	{x: 20, delay: 96, size: 36},
 	{x: 230, delay: 108, size: 40},
 ];
-const CHIPS = ['Publications régulières', 'Visuels professionnels', 'Plus de visibilité'];
+const NOTIFS = [
+	{text: '+1 abonné', x: 300, y: 40, delay: 18},
+	{text: '♥ 128 j\'aime', x: -250, y: 170, delay: 32},
+	{text: 'Nouveau message', x: 300, y: 300, delay: 46},
+	{text: '+1 abonné', x: -230, y: 430, delay: 60},
+	{text: '↗ Partagé 24 fois', x: 290, y: 520, delay: 74},
+];
 
 const Post: React.FC<{i: number}> = ({i}) => (
 	<div style={{height: POST_HEIGHT - 16, borderRadius: 18, background: '#161616', padding: 14, boxSizing: 'border-box'}}>
@@ -42,85 +48,84 @@ const Post: React.FC<{i: number}> = ({i}) => (
 	</div>
 );
 
-// Un téléphone qui fait défiler des publications, avec des « j'aime » qui s'envolent.
+// Un téléphone qui fait défiler des publications, avec des « j'aime » et des notifications qui surgissent.
 export const SocialFeed: React.FC = () => {
-	const frame = useCurrentFrame();
+	// Animation accélérée pour un rythme plus soutenu.
+	const frame = useCurrentFrame() * 1.45;
 	const {fps} = useVideoConfig();
 	const scroll = interpolate(frame, [20, 145], [0, -(POSTS - 2) * POST_HEIGHT], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
 
 	return (
-		<div style={{display: 'flex', alignItems: 'center', gap: 40}}>
-			<div style={{position: 'relative'}}>
-				<div
-					style={{
-						width: 330,
-						height: 600,
-						borderRadius: 46,
-						border: `4px solid ${COLORS.gold}`,
-						background: COLORS.panel,
-						overflow: 'hidden',
-						padding: '26px 14px',
-						boxSizing: 'border-box',
-						boxShadow: '0 30px 80px rgba(206,173,111,0.25)',
-					}}
-				>
-					<div style={{transform: `translateY(${scroll}px)`, display: 'flex', flexDirection: 'column', gap: 16}}>
-						{Array.from({length: POSTS}).map((_, i) => (
-							<Post key={i} i={i} />
-						))}
-					</div>
+		<div style={{position: 'relative'}}>
+			<div
+				style={{
+					width: 330,
+					height: 600,
+					borderRadius: 46,
+					border: `4px solid ${COLORS.gold}`,
+					background: COLORS.panel,
+					overflow: 'hidden',
+					padding: '26px 14px',
+					boxSizing: 'border-box',
+					boxShadow: '0 30px 80px rgba(206,173,111,0.25)',
+				}}
+			>
+				<div style={{transform: `translateY(${scroll}px)`, display: 'flex', flexDirection: 'column', gap: 16}}>
+					{Array.from({length: POSTS}).map((_, i) => (
+						<Post key={i} i={i} />
+					))}
 				</div>
-				{HEARTS.map((h, i) => {
-					const t = frame - h.delay;
-					const p = interpolate(t, [0, 40], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
-					if (t < 0 || p >= 1) return null;
-					return (
-						<svg
-							key={i}
-							width={h.size}
-							height={h.size}
-							viewBox="0 0 24 24"
-							style={{
-								position: 'absolute',
-								left: h.x,
-								bottom: 80 + p * 320,
-								opacity: 1 - p,
-								transform: `scale(${0.6 + p * 0.6}) rotate(${Math.sin(t / 4) * 15}deg)`,
-							}}
-						>
-							<path d={HEART} fill={i % 2 ? COLORS.goldLight : '#ff4d6d'} />
-						</svg>
-					);
-				})}
 			</div>
-			<div style={{display: 'flex', flexDirection: 'column', gap: 22}}>
-				{CHIPS.map((label, i) => {
-					const s = pop(frame, fps, 30 + i * 12);
-					return (
-						<div
-							key={label}
-							style={{
-								display: 'flex',
-								alignItems: 'center',
-								gap: 14,
-								padding: '18px 24px',
-								borderRadius: 18,
-								background: '#151515',
-								border: `2px solid ${COLORS.goldDark}`,
-								fontFamily: BODY_FONT,
-								fontWeight: 600,
-								fontSize: 30,
-								color: COLORS.white,
-								opacity: Math.min(1, s),
-								transform: `translateX(${(1 - s) * 80}px)`,
-							}}
-						>
-							<div style={{width: 16, height: 16, borderRadius: 8, background: COLORS.gold, flexShrink: 0}} />
-							{label}
-						</div>
-					);
-				})}
-			</div>
+			{HEARTS.map((h, i) => {
+				const t = frame - h.delay;
+				const p = interpolate(t, [0, 40], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
+				if (t < 0 || p >= 1) return null;
+				return (
+					<svg
+						key={i}
+						width={h.size}
+						height={h.size}
+						viewBox="0 0 24 24"
+						style={{
+							position: 'absolute',
+							left: h.x,
+							bottom: 80 + p * 320,
+							opacity: 1 - p,
+							transform: `scale(${0.6 + p * 0.6}) rotate(${Math.sin(t / 4) * 15}deg)`,
+						}}
+					>
+						<path d={HEART} fill={i % 2 ? COLORS.goldLight : '#ff4d6d'} />
+					</svg>
+				);
+			})}
+			{NOTIFS.map((n, i) => {
+				const s = pop(frame, fps, n.delay);
+				const float = Math.sin((frame + i * 20) / 12) * 8;
+				return (
+					<div
+						key={i}
+						style={{
+							position: 'absolute',
+							left: n.x,
+							top: n.y + float,
+							whiteSpace: 'nowrap',
+							padding: '14px 24px',
+							borderRadius: 18,
+							background: i % 2 ? '#151515' : COLORS.gold,
+							border: `2px solid ${COLORS.gold}`,
+							color: i % 2 ? COLORS.white : COLORS.black,
+							fontFamily: BODY_FONT,
+							fontWeight: 700,
+							fontSize: 28,
+							boxShadow: '0 12px 40px rgba(0,0,0,0.6)',
+							opacity: Math.min(1, s),
+							transform: `scale(${s})`,
+						}}
+					>
+						{n.text}
+					</div>
+				);
+			})}
 		</div>
 	);
 };

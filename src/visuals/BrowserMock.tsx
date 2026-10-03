@@ -8,7 +8,8 @@ const CLICK = 92;
 
 // Un site web qui se construit bloc par bloc, puis un clic sur « Réserver ».
 export const BrowserMock: React.FC = () => {
-	const frame = useCurrentFrame();
+	// Animation accélérée pour un rythme plus soutenu.
+	const frame = useCurrentFrame() * 1.45;
 	const {fps} = useVideoConfig();
 	const typed = Math.floor(interpolate(frame, [12, 40], [0, URL.length], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}));
 	const nav = pop(frame, fps, 20);

@@ -1,72 +1,73 @@
 import React from 'react';
-import {AbsoluteFill, interpolate, Sequence, spring, useCurrentFrame, useVideoConfig} from 'remotion';
+import {AbsoluteFill, Sequence, spring, useCurrentFrame, useVideoConfig} from 'remotion';
 import {type Cue, sfx, Soundtrack, vo} from './audio/Soundtrack';
-import {AnimatedWords} from './components/AnimatedWords';
 import {Background} from './components/Background';
-import {GoldWipe, WIPE_DURATION} from './components/GoldWipe';
 import {Logo} from './components/Logo';
+import {MotionAccents} from './components/MotionAccents';
 import {SafeArea, SafeZoneOverlay} from './components/SafeArea';
+import {SceneTransition, TRANSITION_DURATION} from './components/SceneTransition';
+import {Shot} from './components/Shot';
+import {SlamWords} from './components/SlamWords';
 import type {AdProps} from './props';
 import {CtaScene} from './scenes/CtaScene';
 
 export const BUMPER_DURATION = 180;
-const LINE_2 = 58;
-const CTA_START = 105;
+const LINE_2 = 50;
+const CTA_START = 100;
 
-const VOICE: Cue[] = [vo('b_intro', 1), vo('b_cta', 95)];
+const VOICE: Cue[] = [vo('b_intro', 1), vo('b_cta', CTA_START + 3)];
 
 const EFFECTS: Cue[] = [
 	sfx('impact', 0, 0.55),
-	sfx('shimmer', 60, 0.3),
-	sfx('whoosh', CTA_START - 12, 0.55),
+	sfx('shimmer', 8, 0.3),
+	sfx('whoosh', LINE_2 - 11, 0.45),
+	sfx('impact', LINE_2 + 2, 0.35),
+	sfx('whoosh', CTA_START - 11, 0.55),
 	sfx('impact', CTA_START, 0.45),
-	sfx('pop', CTA_START + 5, 0.45),
-	sfx('shimmer', CTA_START + 12, 0.35),
+	sfx('pop', CTA_START + 4, 0.45),
+	sfx('shimmer', CTA_START + 10, 0.35),
 ];
 
-const fadeOut = (frame: number, end: number) =>
-	interpolate(frame, [end - 8, end], [1, 0], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
-
-const BumperIntro: React.FC = () => {
+// Le logo reste en haut pendant toute l'intro, les phrases changent en dessous.
+const PinnedLogo: React.FC = () => {
 	const frame = useCurrentFrame();
 	const {fps} = useVideoConfig();
-	const logoIn = spring({frame: frame - 4, fps, config: {damping: 200}});
-
+	const s = spring({frame, fps, config: {damping: 11, stiffness: 200, mass: 0.6}});
 	return (
-		<AbsoluteFill>
-			<SafeArea style={{gap: 50}}>
-				<div style={{opacity: logoIn, transform: `scale(${0.9 + 0.1 * logoIn})`}}>
-					<Logo width={560} shineStart={60} />
-				</div>
-				<div style={{position: 'relative', width: '100%', height: 260}}>
-					<AbsoluteFill style={{justifyContent: 'center', opacity: fadeOut(frame, LINE_2)}}>
-						<AnimatedWords text="Commerçants, artisans" fontSize={100} delay={2} stagger={3} />
-						<AnimatedWords text={'de La Réunion :'} fontSize={100} highlight={['La Réunion']} delay={8} stagger={3} />
-					</AbsoluteFill>
-					{frame >= LINE_2 - 2 && (
-						<AbsoluteFill style={{justifyContent: 'center'}}>
-							<AnimatedWords text="Plus de clients" fontSize={104} highlight={['clients']} delay={LINE_2} stagger={3} />
-							<AnimatedWords text="grâce au digital." fontSize={104} highlight={['digital.']} delay={LINE_2 + 6} stagger={3} />
-						</AbsoluteFill>
-					)}
-				</div>
-			</SafeArea>
-		</AbsoluteFill>
+		<SafeArea style={{justifyContent: 'flex-start', paddingTop: 90}}>
+			<div style={{opacity: Math.min(1, s * 1.5), transform: `scale(${2 - s})`}}>
+				<Logo width={520} shineStart={8} />
+			</div>
+		</SafeArea>
 	);
 };
+
+const Line: React.FC<{a: string; b: string; highlight: string[]}> = ({a, b, highlight}) => (
+	<SafeArea style={{paddingTop: 250}}>
+		<SlamWords text={a} fontSize={124} highlight={highlight} delay={1} stagger={2} />
+		<SlamWords text={b} fontSize={124} highlight={highlight} delay={6} stagger={2} />
+	</SafeArea>
+);
 
 // Version « bumper » de 6 s (non désactivable) : accroche + logo + appel à l'action.
 export const TaochyBumper6s: React.FC<AdProps> = (props) => (
 	<AbsoluteFill>
 		<Background />
 		<Sequence durationInFrames={CTA_START}>
-			<BumperIntro />
+			<MotionAccents seed="bumper" ghostText="974" />
+			<PinnedLogo />
 		</Sequence>
+		<Shot from={0} duration={LINE_2} exit="left" camera={{from: {scale: 1.25, rx: 18}, to: {scale: 1, rx: 0}}}>
+			<Line a="Commerçants, artisans" b={'de La Réunion :'} highlight={['La Réunion']} />
+		</Shot>
+		<Shot from={LINE_2} duration={CTA_START - LINE_2} enter="right" camera={{from: {scale: 1.1, rz: -4}, to: {scale: 1, rz: 0}}}>
+			<Line a="Plus de clients" b="grâce au digital." highlight={['clients', 'digital.']} />
+		</Shot>
 		<Sequence from={CTA_START}>
 			<CtaScene cta={props.cta} website={props.website} />
 		</Sequence>
-		<Sequence from={CTA_START - WIPE_DURATION / 2} durationInFrames={WIPE_DURATION}>
-			<GoldWipe />
+		<Sequence from={CTA_START - TRANSITION_DURATION / 2} durationInFrames={TRANSITION_DURATION}>
+			<SceneTransition type="iris" />
 		</Sequence>
 		<Soundtrack
 			music="audio/music-6s.wav"

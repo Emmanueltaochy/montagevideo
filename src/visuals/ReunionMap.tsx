@@ -37,7 +37,8 @@ const PINS = [
 
 // La carte de l'île se dessine, puis des points de ciblage s'allument dans les villes.
 export const ReunionMap: React.FC = () => {
-	const frame = useCurrentFrame();
+	// Animation accélérée pour un rythme plus soutenu.
+	const frame = useCurrentFrame() * 1.45;
 	const {fps} = useVideoConfig();
 	const draw = interpolate(frame, [6, 40], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
 	const fill = interpolate(frame, [30, 50], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});

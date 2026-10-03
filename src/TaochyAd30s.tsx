@@ -2,13 +2,13 @@ import React from 'react';
 import {AbsoluteFill, Sequence} from 'remotion';
 import {type Cue, sfx, Soundtrack, vo} from './audio/Soundtrack';
 import {Background} from './components/Background';
-import {GoldWipe, WIPE_DURATION} from './components/GoldWipe';
 import {SafeZoneOverlay} from './components/SafeArea';
+import {SceneTransition, TRANSITION_DURATION, type TransitionType} from './components/SceneTransition';
 import type {AdProps} from './props';
 import {CtaScene} from './scenes/CtaScene';
-import {HookScene} from './scenes/HookScene';
-import {ServiceScene} from './scenes/ServiceScene';
-import {StatScene} from './scenes/StatScene';
+import {HOOK_SHAKE, HOOK_SHOT_2, HookScene} from './scenes/HookScene';
+import {SERVICE_SHOT_B, ServiceScene} from './scenes/ServiceScene';
+import {COUNT_END, StatScene} from './scenes/StatScene';
 import {BrowserMock} from './visuals/BrowserMock';
 import {ReunionMap} from './visuals/ReunionMap';
 import {SocialFeed} from './visuals/SocialFeed';
@@ -16,47 +16,65 @@ import {SocialFeed} from './visuals/SocialFeed';
 const SCENE = 150; // 5 s à 30 fps
 export const AD_DURATION = SCENE * 6;
 
-// Voix off, calée sur l'apparition des textes.
+// Une transition différente à chaque changement de scène.
+const TRANSITIONS: TransitionType[] = ['wipe', 'iris', 'slices', 'streaks', 'flash'];
+
+// Les animations des visuels tournent à 1,45× : convertit une image « visuel » en image de la scène.
+const V = (f: number) => SERVICE_SHOT_B + Math.round(f / 1.45);
+
 const VOICE: Cue[] = [
-	vo('hook1', 4),
-	vo('hook2', 74),
-	vo('web', SCENE + 14),
-	vo('social', SCENE * 2 + 14),
-	vo('ads', SCENE * 3 + 14),
-	vo('stat', SCENE * 4 + 14),
-	vo('cta', SCENE * 5 + 8),
+	vo('hook1', 2),
+	vo('hook2', HOOK_SHOT_2 + 4),
+	vo('web', SCENE + 3),
+	vo('social', SCENE * 2 + 3),
+	vo('ads', SCENE * 3 + 6),
+	vo('stat', SCENE * 4 + 4),
+	vo('cta', SCENE * 5 + 4),
 ];
 
-// Bruitages, calés image par image sur les animations des scènes.
+const serviceEffects = (o: number): Cue[] => [
+	sfx('impact', o + 4, 0.3),
+	sfx('whoosh', o + SERVICE_SHOT_B - 11, 0.4),
+	...[14, 20, 26].map((f) => sfx('pop', o + SERVICE_SHOT_B + f, 0.3)),
+];
+
+// Bruitages, calés image par image sur les animations.
 const EFFECTS: Cue[] = [
+	// Accroche
 	sfx('impact', 0, 0.6),
-	sfx('shimmer', 82, 0.35),
-	sfx('impact', 100, 0.45),
-	// Balayages dorés : le pic du whoosh tombe au changement de scène.
-	...[1, 2, 3, 4, 5].map((i) => sfx('whoosh', i * SCENE - 12, 0.55)),
+	sfx('typing', 10, 0.35),
+	sfx('click', 44, 0.6),
+	sfx('whoosh', HOOK_SHOT_2 - 11, 0.5),
+	sfx('impact', HOOK_SHOT_2 + 6, 0.4),
+	sfx('shimmer', HOOK_SHOT_2 + 10, 0.3),
+	...[18, 23, 28].map((f) => sfx('pop', HOOK_SHOT_2 + f, 0.35)),
+	sfx('impact', HOOK_SHAKE, 0.4),
+	// Transitions entre scènes : le pic du whoosh tombe au changement.
+	...[1, 2, 3, 4, 5].map((i) => sfx('whoosh', i * SCENE - 11, 0.6)),
 	// 01 — site web
-	sfx('typing', SCENE + 12, 0.35),
-	sfx('pop', SCENE + 28, 0.4),
-	sfx('pop', SCENE + 40, 0.3),
-	sfx('pop', SCENE + 60, 0.4),
-	sfx('click', SCENE + 92, 0.7),
-	sfx('shimmer', SCENE + 98, 0.3),
+	...serviceEffects(SCENE),
+	sfx('typing', SCENE + V(12), 0.3),
+	sfx('click', SCENE + V(92), 0.6),
+	sfx('shimmer', SCENE + V(98), 0.25),
 	// 02 — réseaux sociaux
-	...[30, 42, 54].map((f) => sfx('pop', SCENE * 2 + f, 0.4)),
-	...[32, 52, 74, 98].map((f) => sfx('pop-high', SCENE * 2 + f, 0.25)),
+	...serviceEffects(SCENE * 2),
+	...[30, 50, 72, 98].map((f) => sfx('pop-high', SCENE * 2 + V(f), 0.22)),
+	...[18, 32, 46, 60, 74].map((f) => sfx('pop', SCENE * 2 + V(f), 0.28)),
 	// 03 — publicité
-	...[34, 44, 54, 64].map((f) => sfx('pop-high', SCENE * 3 + f, 0.35)),
-	sfx('pop', SCENE * 3 + 80, 0.45),
-	// Chiffre client : montée pendant le compteur, impact à l'arrivée
-	sfx('riser', SCENE * 4 + 7, 0.4),
-	sfx('impact', SCENE * 4 + 55, 0.55),
+	...serviceEffects(SCENE * 3),
+	...[34, 44, 54, 64].map((f) => sfx('pop-high', SCENE * 3 + V(f), 0.32)),
+	sfx('pop', SCENE * 3 + V(80), 0.4),
+	// Chiffre client
+	sfx('pop', SCENE * 4 + 2, 0.4),
+	sfx('riser', SCENE * 4 + COUNT_END - 48, 0.35),
+	sfx('impact', SCENE * 4 + COUNT_END, 0.55),
 	// Appel à l'action
 	sfx('impact', SCENE * 5, 0.5),
-	sfx('pop', SCENE * 5 + 5, 0.45),
-	sfx('shimmer', SCENE * 5 + 12, 0.4),
+	sfx('pop', SCENE * 5 + 4, 0.45),
+	sfx('shimmer', SCENE * 5 + 10, 0.4),
 ];
 
-// Version longue : 30 s, 6 scènes de 5 s séparées par un balayage doré.
+// Version longue : 30 s, 6 scènes de 5 s, plusieurs plans par scène et angles de caméra variés.
 export const TaochyAd30s: React.FC<AdProps> = (props) => {
 	const scenes = [
 		<HookScene key="hook" />,
@@ -64,24 +82,48 @@ export const TaochyAd30s: React.FC<AdProps> = (props) => {
 			key="web"
 			index="01"
 			title="Création de site web"
+			ghost="WEB"
 			highlight={['site', 'web']}
 			tagline="Un site pro qui attire des clients"
+			features={['Design moderne', 'Adapté au mobile', 'Visible sur Google']}
+			angles={{
+				titleEnter: 'zoom',
+				cut: 'zoom',
+				titleCamera: {from: {scale: 1.4, rz: 6}, to: {scale: 1, rz: 0}},
+				visualCamera: {from: {ry: -18, scale: 1.08, x: 80}, to: {ry: -4, scale: 1, x: 0}},
+			}}
 			visual={<BrowserMock />}
 		/>,
 		<ServiceScene
 			key="social"
 			index="02"
 			title="Gestion des réseaux sociaux"
+			ghost="SOCIAL"
 			highlight={['réseaux', 'sociaux']}
 			tagline="On publie, vous vendez"
+			features={['Visuels sur mesure', 'Publications régulières', 'Stories & Reels']}
+			angles={{
+				titleEnter: 'up',
+				cut: 'left',
+				titleCamera: {from: {rx: 30, y: 120, scale: 1.1}, to: {rx: 0, y: 0, scale: 1}},
+				visualCamera: {from: {rz: -5, scale: 1.12}, to: {rz: 1.5, scale: 1}},
+			}}
 			visual={<SocialFeed />}
 		/>,
 		<ServiceScene
 			key="ads"
 			index="03"
 			title="Publicité en ligne"
+			ghost="ADS"
 			highlight={['publicité']}
 			tagline="Touchez les clients du 974"
+			features={['Facebook & Instagram', 'Google Ads', 'Ciblage local']}
+			angles={{
+				titleEnter: 'left',
+				cut: 'up',
+				titleCamera: {from: {ry: 35, scale: 1.15}, to: {ry: 0, scale: 1}},
+				visualCamera: {from: {scale: 1.12, y: 50}, to: {scale: 1, y: 0}},
+			}}
 			visual={<ReunionMap />}
 		/>,
 		<StatScene
@@ -103,9 +145,9 @@ export const TaochyAd30s: React.FC<AdProps> = (props) => {
 					{scene}
 				</Sequence>
 			))}
-			{scenes.slice(1).map((_, i) => (
-				<Sequence key={`wipe-${i}`} from={(i + 1) * SCENE - WIPE_DURATION / 2} durationInFrames={WIPE_DURATION}>
-					<GoldWipe />
+			{TRANSITIONS.map((type, i) => (
+				<Sequence key={type} from={(i + 1) * SCENE - TRANSITION_DURATION / 2} durationInFrames={TRANSITION_DURATION}>
+					<SceneTransition type={type} />
 				</Sequence>
 			))}
 			<Soundtrack

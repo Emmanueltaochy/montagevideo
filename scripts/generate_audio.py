@@ -14,7 +14,7 @@ SR = 44100
 ROOT = os.path.join(os.path.dirname(__file__), '..', 'public', 'audio')
 rng = np.random.default_rng(974)
 
-BPM = 96  # 1 mesure = 2,5 s : chaque scène de 5 s dure exactement 2 mesures
+BPM = 144  # 1 mesure = 1,667 s : chaque scène de 5 s dure exactement 3 mesures
 BEAT = 60 / BPM
 BAR = BEAT * 4
 
@@ -125,10 +125,9 @@ def shimmer(d=1.6):
 
 # ---------- musique ----------
 
-CHORDS = [  # (basse, notes du pad) : Am – F – C – G
+CHORDS = [  # (basse, notes du pad) : Am – F – G, une grille par scène de 5 s
 	(45, [57, 60, 64]),
 	(41, [53, 57, 60]),
-	(48, [55, 60, 64]),
 	(43, [55, 59, 62]),
 ]
 
@@ -205,7 +204,7 @@ ARP = [0, 1, 2, 3, 2, 1, 0, 2]
 
 def bar_parts(mix, b, start, sections):
 	"""Ajoute une mesure ; `sections` dit quels instruments jouent."""
-	root, notes = CHORDS[b % 4]
+	root, notes = CHORDS[b % 3]
 	tones = notes + [notes[0] + 12]
 	if 'pad' in sections:
 		mix.add(start, pad(notes, BAR + 0.4, 1400 if 'bright' in sections else 800), 0.10, -0.2)
@@ -235,27 +234,26 @@ def music_30s():
 	mix = Mix(30)
 	full = {'pad', 'arp', 'kick', 'clap', 'hat', 'bass'}
 	plan = {
-		0: {'pad', 'arp', 'hat'},  # accroche : tension, sans grosse caisse
-		1: {'pad', 'arp', 'hat'},
-		8: {'pad', 'arp', 'kick', 'hat'},  # résultat client : allègement…
-		9: {'pad', 'arp', 'kick', 'hat', 'roll'},  # …puis montée
-		10: full | {'bright'},
-		11: full | {'bright'},
+		0: {'pad', 'arp', 'kick', 'hat', 'bass'},  # accroche : énergique dès la 1re image
+		1: {'pad', 'arp', 'kick', 'hat', 'bass'},
+		2: {'pad', 'arp', 'kick', 'hat', 'bass', 'roll'},
+		14: full | {'roll'},  # montée vers l'appel à l'action
+		15: full | {'bright'},
+		16: full | {'bright'},
+		17: full | {'bright'},
 	}
-	for b in range(12):
+	for b in range(18):
 		bar_parts(mix, b, b * BAR, plan.get(b, full))
-	mix.add(5 - 1.6, riser(1.6), 0.35)
+	mix.add(5 - 1.6, riser(1.6), 0.3)
 	mix.add(25 - 1.6, riser(1.6), 0.3)
-	mix.add(29.0, pad(CHORDS[0][1], 1.0, 1400), 0.12)
 	return mix.render()
 
 
 def music_6s():
 	mix = Mix(6)
 	full = {'pad', 'arp', 'kick', 'clap', 'hat', 'bass', 'bright'}
-	bar_parts(mix, 0, 0, full)
-	bar_parts(mix, 1, BAR, full | {'roll'})
-	bar_parts(mix, 0, 2 * BAR, {'pad', 'arp', 'kick', 'bass', 'bright'})
+	for b in range(4):
+		bar_parts(mix, b, b * BAR, full | ({'roll'} if b == 1 else set()))
 	return mix.render()
 
 
