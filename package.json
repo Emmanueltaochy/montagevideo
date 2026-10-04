@@ -5,11 +5,12 @@
   "description": "Publicités YouTube de TAOCHY AGENCY réalisées avec Remotion",
   "scripts": {
     "dev": "remotion studio",
-    "render": "remotion render TaochyAd30s out/taochy-ad-30s.mp4 && remotion render TaochyBumper6s out/taochy-bumper-6s.mp4 && remotion render TaochyReel30s out/taochy-reel-30s.mp4",
+    "render": "remotion render TaochyAd30s out/taochy-ad-30s.mp4 && remotion render TaochyBumper6s out/taochy-bumper-6s.mp4 && remotion render TaochyReel30s out/taochy-reel-30s.mp4 && remotion render TaochyAI30s out/taochy-ia-30s.mp4 && remotion render TaochyAIReel30s out/taochy-ia-reel-30s.mp4",
     "render:30s": "remotion render TaochyAd30s out/taochy-ad-30s.mp4",
     "render:6s": "remotion render TaochyBumper6s out/taochy-bumper-6s.mp4",
     "lint": "tsc --noEmit",
-    "render:reel": "remotion render TaochyReel30s out/taochy-reel-30s.mp4"
+    "render:reel": "remotion render TaochyReel30s out/taochy-reel-30s.mp4",
+    "render:ia": "remotion render TaochyAI30s out/taochy-ia-30s.mp4 && remotion render TaochyAIReel30s out/taochy-ia-reel-30s.mp4"
   },
   "dependencies": {
     "@remotion/cli": "^4.0.532",

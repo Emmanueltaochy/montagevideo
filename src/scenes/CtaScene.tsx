@@ -38,12 +38,13 @@ const Rings: React.FC = () => {
 };
 
 // Écran final : logo + appel à l'action + site web, tout est en place en moins de 0,4 s.
-export const CtaScene: React.FC<{cta: string; website: string}> = ({cta, website}) => {
+export const CtaScene: React.FC<{cta: string; website: string; subline?: string}> = ({cta, website, subline}) => {
 	const frame = useCurrentFrame();
 	const {fps} = useVideoConfig();
 	const logoIn = spring({frame, fps, config: {damping: 11, stiffness: 200, mass: 0.6}});
 	const buttonIn = spring({frame: frame - 4, fps, config: {damping: 10, stiffness: 200, mass: 0.6}});
 	const siteIn = spring({frame: frame - 8, fps, config: {damping: 14, stiffness: 200}});
+	const sublineIn = spring({frame: frame - 12, fps, config: {damping: 200}});
 	const pulse = frame > 16 ? 1 + 0.04 * Math.sin((frame - 16) / 4) : 1;
 	const glow = 40 + 30 * Math.sin(frame / 4);
 	const arrowX = 14 * Math.sin(frame / 3);
@@ -103,6 +104,21 @@ export const CtaScene: React.FC<{cta: string; website: string}> = ({cta, website
 					>
 						{website}
 					</div>
+					{subline && (
+						<div
+							style={{
+								opacity: sublineIn,
+								fontFamily: BODY_FONT,
+								fontWeight: 600,
+								fontSize: r(36, 34),
+								letterSpacing: 2,
+								color: COLORS.gold,
+								textAlign: 'center',
+							}}
+						>
+							{subline}
+						</div>
+					)}
 				</SafeArea>
 			</Camera>
 		</AbsoluteFill>

@@ -1,12 +1,14 @@
-# TAOCHY AGENCY — Publicités YouTube (Remotion)
+# TAOCHY AGENCY — Publicités vidéo (Remotion)
 
-Trois vidéos à 30 fps :
+Vidéos à 30 fps :
 
 | Composition | Format | Durée | Usage |
 |---|---|---|---|
 | `TaochyAd30s` | 1920×1080 | 30 s | YouTube : annonce désactivable après 5 s (in-stream) |
 | `TaochyBumper6s` | 1920×1080 | 6 s | YouTube : annonce « bumper » non désactivable |
 | `TaochyReel30s` | 1080×1920 | 30 s | Instagram Reels (même montage, mise en page verticale) |
+| `TaochyAI30s` | 1920×1080 | 30 s | YouTube : pub « Taochy Agency × IA » (assistant, automatisation, contenus) |
+| `TaochyAIReel30s` | 1080×1920 | 30 s | Instagram Reels : pub IA en vertical |
 
 La version verticale réutilise les mêmes scènes : la mise en page s'adapte à l'orientation (`src/layout.ts`). Le contenu reste hors des zones de l'interface Instagram (270 px en haut, 640 px en bas, 70 px sur les côtés — voir `REEL_SAFE` dans `src/theme.ts`).
 
@@ -15,7 +17,7 @@ La version verticale réutilise les mêmes scènes : la mise en page s'adapte à
 ```bash
 npm install
 npm run dev        # ouvre le Studio Remotion sur http://localhost:3000
-npm run render     # génère les 3 vidéos dans out/
+npm run render     # génère toutes les vidéos dans out/
 ```
 
 ## Modifier les textes
@@ -34,6 +36,7 @@ Les autres textes sont dans `src/scenes/` et `src/TaochyAd30s.tsx`.
 src/
   TaochyAd30s.tsx       # montage 30 s (6 scènes de 5 s)
   TaochyBumper6s.tsx    # montage 6 s
+  TaochyAI30s.tsx       # pub IA (30 s) — scènes dans scenes/ai/, animations dans visuals/ai/
   scenes/               # accroche, services, chiffre, appel à l'action
   visuals/              # animations : site web, réseaux sociaux, carte de La Réunion
   components/           # caméra 3D, plans, transitions, habillage motion design, zone sûre

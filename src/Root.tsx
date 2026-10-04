@@ -2,6 +2,7 @@ import React from 'react';
 import {Composition} from 'remotion';
 import {DEFAULT_PROPS} from './props';
 import {AD_DURATION, TaochyAd30s} from './TaochyAd30s';
+import {AI_DURATION, TaochyAI30s} from './TaochyAI30s';
 import {BUMPER_DURATION, TaochyBumper6s} from './TaochyBumper6s';
 import {REEL, VIDEO} from './theme';
 
@@ -32,6 +33,24 @@ export const RemotionRoot: React.FC = () => (
 			fps={VIDEO.fps}
 			width={VIDEO.width}
 			height={VIDEO.height}
+			defaultProps={DEFAULT_PROPS}
+		/>
+		<Composition
+			id="TaochyAI30s"
+			component={TaochyAI30s}
+			durationInFrames={AI_DURATION}
+			fps={VIDEO.fps}
+			width={VIDEO.width}
+			height={VIDEO.height}
+			defaultProps={DEFAULT_PROPS}
+		/>
+		<Composition
+			id="TaochyAIReel30s"
+			component={TaochyAI30s}
+			durationInFrames={AI_DURATION}
+			fps={VIDEO.fps}
+			width={REEL.width}
+			height={REEL.height}
 			defaultProps={DEFAULT_PROPS}
 		/>
 	</>

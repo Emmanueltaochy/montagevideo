@@ -19,6 +19,13 @@ const VO_FRAMES: Record<string, number> = {
 	cta: 112,
 	b_intro: 81,
 	b_cta: 72,
+	// Pub IA
+	ai_hook: 110,
+	ai_assist: 148,
+	ai_auto: 144,
+	ai_content: 145,
+	ai_proof: 147,
+	ai_cta: 144,
 };
 
 export const vo = (name: keyof typeof VO_FRAMES & string, at: number): Cue => ({src: `audio/vo/${name}.wav`, at, volume: VOICE_VOLUME});
