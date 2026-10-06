@@ -179,7 +179,7 @@
 		}).observe(booking);
 	}
 
-	// ───────── Agenda Calendly (chargé à l'approche de la section) ─────────
+	// ───────── Agenda Calendly (préchargé après l'affichage de la page) ─────────
 	const calEl = document.getElementById('cal-inline');
 	const loadCalendly = () => {
 		if (!config.calendlyUrl || window.__calendlyLoaded) return;
@@ -212,16 +212,14 @@
 		}
 	});
 
+	// Chargé dès que la page est affichée (sans la ralentir), pour que l'agenda soit prêt
+	// quand le visiteur arrive en bas. Un clic sur un bouton « Réserver » le lance tout de suite.
 	if (calEl && config.calendlyUrl) {
-		if ('IntersectionObserver' in window) {
-			const io = new IntersectionObserver(([e]) => {
-				if (e.isIntersecting) {
-					loadCalendly();
-					io.disconnect();
-				}
-			}, {rootMargin: '600px'});
-			io.observe(calEl);
-		} else loadCalendly();
+		const idle = window.requestIdleCallback || ((cb) => setTimeout(cb, 1));
+		const preload = () => setTimeout(() => idle(loadCalendly), 1200);
+		if (document.readyState === 'complete') preload();
+		else window.addEventListener('load', preload, {once: true});
+		document.querySelectorAll('a[href="#reserver"]').forEach((a) => a.addEventListener('click', loadCalendly));
 	}
 
 	// ───────── Effets 3D ─────────
