@@ -36,6 +36,7 @@ Tester en local : `cd landing && python3 -m http.server` puis ouvrir http://loca
 |---|---|
 | `booking_confirmed` | Rendez-vous confirmé dans Cal.com — **la conversion à suivre** |
 | `cta_click` (+ `cta_location`) | Clic sur un bouton « Réserver » (`header`, `hero`, `mobile-bar`…) |
+| `proof_view` / `service_tab` | Navigation dans le carrousel des résultats / les onglets des services |
 | `video_play` / `video_complete` | Lecture de la vidéo |
 | `consent_choice` | Choix dans le bandeau cookies |
 
