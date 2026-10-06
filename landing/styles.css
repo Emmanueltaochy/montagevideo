@@ -349,15 +349,15 @@ a {
 	transition: opacity 600ms var(--ease), transform 800ms var(--ease);
 }
 .search-demo.is-revealed .result:nth-child(2) {
-	transition-delay: 250ms;
+	transition-delay: 180ms;
 }
 .search-demo.is-revealed .result:nth-child(3) {
-	transition-delay: 450ms;
+	transition-delay: 330ms;
 }
 .search-demo.is-revealed .result--you {
 	transform: translateZ(80px) scale(1.03);
 	background: #17140d;
-	transition-delay: 900ms;
+	transition-delay: 650ms;
 	box-shadow: 0 0 0 1px var(--gold), 0 18px 50px -12px rgba(206, 173, 111, 0.55);
 }
 
@@ -628,28 +628,129 @@ a {
 	color: var(--muted);
 }
 
-/* Problème */
-.problem__inner {
-	display: grid;
-	gap: 28px;
-}
-@media (min-width: 860px) {
-	.problem__inner {
-		grid-template-columns: 1fr 1fr;
-		align-items: start;
-	}
+/* Problème : le scénario du client perdu, en trois temps */
+.problem {
+	text-align: center;
 }
 .problem__title {
-	font-size: var(--step-2);
+	font-size: var(--step-hero);
 	font-weight: 900;
-	line-height: 1.08;
-	letter-spacing: -0.025em;
+	line-height: 1.02;
+	letter-spacing: -0.035em;
 }
-.problem__text {
+.problem__title span {
+	display: block;
+	color: var(--gold);
+}
+.problem__flow {
+	list-style: none;
+	margin: 56px auto 0;
+	padding: 0;
+	max-width: 1040px;
+	display: grid;
+	gap: 18px;
+	counter-reset: step;
+}
+.problem__step {
+	position: relative;
+	display: grid;
+	justify-items: center;
+	gap: 16px;
+	padding: 32px 22px 28px;
+	border: 1px solid var(--line);
+	border-radius: var(--radius-lg);
+	background: linear-gradient(180deg, #121212, #0a0a0a);
 	font-size: var(--step-1);
-	line-height: 1.55;
+	line-height: 1.3;
 	color: var(--muted);
-	max-width: 46ch;
+	counter-increment: step;
+}
+.problem__step::before {
+	content: '0' counter(step);
+	position: absolute;
+	top: 14px;
+	left: 18px;
+	font-family: var(--font-display);
+	font-weight: 800;
+	font-size: 0.85rem;
+	color: var(--gold-deep);
+}
+.problem__step strong {
+	color: var(--paper);
+}
+.problem__icon {
+	display: grid;
+	place-items: center;
+	width: 64px;
+	height: 64px;
+	border-radius: 50%;
+	background: rgba(206, 173, 111, 0.1);
+	border: 1px solid rgba(206, 173, 111, 0.35);
+}
+.problem__icon svg {
+	width: 30px;
+	height: 30px;
+	fill: none;
+	stroke: var(--gold);
+	stroke-width: 1.8;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+}
+.problem__step--lost {
+	border-color: rgba(226, 92, 72, 0.55);
+	background: linear-gradient(180deg, #1c0f0c, #0d0807);
+}
+.problem__step--lost .problem__icon {
+	background: rgba(226, 92, 72, 0.14);
+	border-color: rgba(226, 92, 72, 0.5);
+	animation: ring 1.6s ease-in-out infinite;
+}
+.problem__step--lost .problem__icon svg {
+	stroke: #ec7a66;
+}
+@keyframes ring {
+	0%, 60%, 100% { transform: rotate(0); }
+	10%, 30%, 50% { transform: rotate(-12deg); }
+	20%, 40% { transform: rotate(12deg); }
+}
+/* flèches entre les étapes */
+.problem__step:not(:last-child)::after {
+	content: '';
+	position: absolute;
+	left: 50%;
+	bottom: -14px;
+	width: 10px;
+	height: 10px;
+	border-right: 2px solid var(--gold);
+	border-bottom: 2px solid var(--gold);
+	transform: translateX(-50%) rotate(45deg);
+	z-index: 1;
+}
+.problem__punch {
+	margin-top: 44px;
+	font-family: var(--font-display);
+	font-weight: 900;
+	font-size: var(--step-2);
+	letter-spacing: -0.02em;
+	color: var(--gold-pale);
+}
+.js .problem__step[data-reveal]:nth-child(2) { transition-delay: 150ms; }
+.js .problem__step[data-reveal]:nth-child(3) { transition-delay: 300ms; }
+@media (min-width: 760px) {
+	.problem__flow {
+		grid-template-columns: repeat(3, 1fr);
+		gap: 34px;
+	}
+	.problem__step:not(:last-child)::after {
+		left: auto;
+		right: -24px;
+		top: 50%;
+		bottom: auto;
+		transform: translateY(-50%) rotate(-45deg);
+	}
+}
+@media (prefers-reduced-motion: reduce) {
+	.problem__step--lost .problem__icon { animation: none; }
 }
 
 /* Services : onglets avec transition 3D */
@@ -1159,6 +1260,83 @@ a {
 	min-width: 320px;
 	height: 700px;
 }
+.booking__choice {
+	margin: 36px auto 0;
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 14px;
+	max-width: 620px;
+}
+.choice {
+	display: flex;
+	align-items: center;
+	gap: 14px;
+	padding: 18px 20px;
+	border: 1px solid var(--line);
+	border-radius: var(--radius-lg);
+	background: #0e0e0e;
+	color: var(--muted);
+	font: inherit;
+	text-align: left;
+	cursor: pointer;
+	transition: border-color 200ms, background 200ms, transform 200ms var(--ease);
+}
+.choice:hover {
+	transform: translateY(-2px);
+	border-color: rgba(206, 173, 111, 0.5);
+}
+.choice:focus-visible {
+	outline: 2px solid var(--gold);
+	outline-offset: 3px;
+}
+.choice svg {
+	flex: none;
+	width: 30px;
+	height: 30px;
+	fill: none;
+	stroke: var(--gold);
+	stroke-width: 1.8;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+}
+.choice span {
+	font-size: 0.9rem;
+	line-height: 1.3;
+}
+.choice strong {
+	display: block;
+	font-family: var(--font-display);
+	font-size: 1.1rem;
+	color: var(--paper);
+}
+.choice[aria-pressed='true'] {
+	border-color: var(--gold);
+	background: #17140d;
+	box-shadow: 0 0 0 1px var(--gold), 0 18px 40px -18px rgba(206, 173, 111, 0.6);
+}
+.booking__mobile-hint {
+	display: none;
+	margin-top: 14px;
+	font-size: 0.9rem;
+	color: var(--muted);
+}
+/* Mobile : pas d'agenda intégré (le doigt resterait coincé dans son défilement) ; il s'ouvre en plein écran. */
+@media (max-width: 759px) {
+	.booking__choice {
+		grid-template-columns: minmax(0, 1fr);
+	}
+	.choice[aria-pressed] {
+		border-color: var(--gold);
+		background: #17140d;
+		box-shadow: none;
+	}
+	.booking__cal {
+		display: none;
+	}
+	.booking__mobile-hint {
+		display: block;
+	}
+}
 .booking__placeholder {
 	place-self: center;
 	padding: 24px;
@@ -1454,14 +1632,26 @@ a {
 	padding-block: 12px;
 }
 @media (max-width: 859px) {
-	.about__photo {
-		--ry: 0deg;
-		--rx: 0deg;
+	/* Sans effet 3D sur mobile : Safari sur iPhone peut sinon ne pas afficher la photo. */
+	.about__photo,
+	.js .about__photo[data-reveal] {
+		transform: none;
+		transform-style: flat;
 		max-width: 340px;
 		margin-inline: auto;
+		isolation: isolate;
+	}
+	.js .about__photo[data-reveal] {
+		transition: opacity 800ms var(--ease);
+	}
+	.about__photo img {
+		position: relative;
+		display: block;
 	}
 	.about__photo::before {
 		inset: 12px -10px -12px 10px;
+		transform: none;
+		z-index: -1;
 	}
 }
 .about__chips {

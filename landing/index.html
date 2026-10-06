@@ -100,9 +100,23 @@
 		</section>
 
 		<section class="section problem" aria-labelledby="problem-title">
-			<div class="wrap problem__inner" data-reveal>
-				<h2 id="problem-title" class="problem__title">Être bon dans son métier ne suffit plus.</h2>
-				<p class="problem__text">Quand quelqu'un cherche un artisan, un restaurant ou un chauffeur, il ouvre Google ou Instagram. S'il ne vous trouve pas en quelques secondes, il appelle quelqu'un d'autre. Même si vous êtes le meilleur.</p>
+			<div class="wrap">
+				<h2 id="problem-title" class="problem__title" data-reveal>Être bon dans son métier <span>ne suffit plus.</span></h2>
+				<ol class="problem__flow">
+					<li class="problem__step" data-reveal>
+						<span class="problem__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/></svg></span>
+						<p>Un client cherche <strong>«&nbsp;menuisier Saint-Denis&nbsp;»</strong></p>
+					</li>
+					<li class="problem__step" data-reveal>
+						<span class="problem__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12s3.5-6.5 9-6.5S21 12 21 12s-3.5 6.5-9 6.5S3 12 3 12z"/><circle cx="12" cy="12" r="2.5"/><path d="M4 20 20 4"/></svg></span>
+						<p>Vous <strong>n'apparaissez pas</strong></p>
+					</li>
+					<li class="problem__step problem__step--lost" data-reveal>
+						<span class="problem__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3h3.5l1.8 4.6-2.3 1.5a11 11 0 0 0 6 6l1.5-2.3 4.5 1.7V18a2 2 0 0 1-2 2A16 16 0 0 1 3 5a2 2 0 0 1 2-2z"/></svg></span>
+						<p>Il appelle <strong>votre concurrent</strong></p>
+					</li>
+				</ol>
+				<p class="problem__punch" data-reveal>Même si vous êtes le meilleur.</p>
 			</div>
 		</section>
 
@@ -339,7 +353,7 @@
 		<section class="section about" aria-labelledby="about-title">
 			<div class="wrap about__grid">
 				<div class="about__photo" data-tilt data-reveal>
-					<img src="assets/emmanuel-taochy.webp" alt="Emmanuel Taochy, fondateur de Taochy Agency" width="720" height="900" loading="lazy">
+					<img src="assets/emmanuel-taochy.webp" alt="Emmanuel Taochy, fondateur de Taochy Agency" width="720" height="900" decoding="async">
 				</div>
 				<div class="about__text" data-reveal>
 					<h2 id="about-title" class="section__title">Derrière Taochy Agency</h2>
@@ -398,10 +412,21 @@
 		<section class="section booking" id="reserver" aria-labelledby="booking-title">
 			<div class="wrap booking__inner">
 				<h2 id="booking-title" class="booking__title">Réservez votre appel gratuit</h2>
-				<p class="booking__lead">Choisissez un créneau qui vous arrange. L'appel est gratuit et sans engagement.</p>
+				<p class="booking__lead">Choisissez votre type d'appel, puis le créneau qui vous arrange. C'est gratuit et sans engagement.</p>
+				<div class="booking__choice" role="group" aria-label="Type d'appel" data-reveal>
+					<button type="button" class="choice" data-cal-type="visio" aria-pressed="true">
+						<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="6" width="13" height="12" rx="2.5"/><path d="m15.5 10.5 6-3.5v10l-6-3.5"/></svg>
+						<span><strong>En visio</strong> Avec partage d'écran</span>
+					</button>
+					<button type="button" class="choice" data-cal-type="phone" aria-pressed="false">
+						<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3h3.5l1.8 4.6-2.3 1.5a11 11 0 0 0 6 6l1.5-2.3 4.5 1.7V18a2 2 0 0 1-2 2A16 16 0 0 1 3 5a2 2 0 0 1 2-2z"/></svg>
+						<span><strong>Par téléphone</strong> On vous appelle</span>
+					</button>
+				</div>
 				<div class="booking__cal" id="cal-inline" data-reveal>
 					<p class="booking__placeholder">L'agenda de réservation s'affichera ici.</p>
 				</div>
+				<p class="booking__mobile-hint">Touchez une option : l'agenda s'ouvre en plein écran.</p>
 			</div>
 		</section>
 	</main>

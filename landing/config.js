@@ -14,6 +14,7 @@ window.TAOCHY_CONFIG = {
 	whatsappMessage: "Bonjour Emmanuel, j'ai vu votre vidéo et j'aimerais en savoir plus.",
 	// Page Calendly de l'appel gratuit (intégrée directement dans la landing page)
 	calendlyUrl: 'https://calendly.com/taochyagency/rendez-vous-en-visio',
+	calendlyPhoneUrl: 'https://calendly.com/taochyagency/30min',
 	// Page des mentions légales (obligatoire en France)
 	legalUrl: 'https://taochyagency.com/mentions-legales/',
 };

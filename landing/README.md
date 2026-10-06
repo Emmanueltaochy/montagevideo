@@ -37,6 +37,7 @@ Tester en local : `cd landing && python3 -m http.server` puis ouvrir http://loca
 | Événement | Quand |
 |---|---|
 | `booking_confirmed` | Rendez-vous confirmé dans Calendly — **la conversion à suivre** |
+| `booking_type_selected` | Choix « En visio » ou « Par téléphone » (paramètre `booking_type` : `visio` ou `phone`) |
 | `booking_slot_selected` | Créneau choisi dans Calendly (avant confirmation) |
 | `whatsapp_click` | Clic sur le bouton WhatsApp |
 | `cta_click` (+ `cta_location`) | Clic sur un bouton « Réserver » (`header`, `hero`, `about`, `mobile-bar`…) |

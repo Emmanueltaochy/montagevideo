@@ -135,14 +135,14 @@
 		// Frappe au rythme d'une vraie personne, puis courte pause avant les résultats.
 		const type = () => {
 			query.textContent = text.slice(0, ++i);
-			if (i < text.length) setTimeout(type, 110 + Math.random() * 90);
-			else setTimeout(() => demo.classList.add('is-revealed'), 900);
+			if (i < text.length) setTimeout(type, 80 + Math.random() * 60);
+			else setTimeout(() => demo.classList.add('is-revealed'), 600);
 		};
 		let started = false;
 		const start = () => {
 			if (started) return;
 			started = true;
-			setTimeout(type, 700);
+			setTimeout(type, 450);
 		};
 		// Sur mobile, la carte est sous le titre : on attend qu'elle soit bien visible pour lancer la frappe.
 		if ('IntersectionObserver' in window) {
@@ -179,26 +179,64 @@
 		}).observe(booking);
 	}
 
-	// ───────── Agenda Calendly (préchargé après l'affichage de la page) ─────────
+	// ───────── Agenda Calendly : visio ou téléphone ─────────
+	// Ordinateur : agenda intégré dans la page. Mobile : agenda en plein écran (pas de défilement piégé dans l'agenda).
 	const calEl = document.getElementById('cal-inline');
-	const loadCalendly = () => {
-		if (!config.calendlyUrl || window.__calendlyLoaded) return;
-		window.__calendlyLoaded = true;
-		const url = new URL(config.calendlyUrl);
+	const calUrls = {visio: config.calendlyUrl, phone: config.calendlyPhoneUrl || config.calendlyUrl};
+	const isMobile = window.matchMedia('(max-width: 759px)');
+	let calType = 'visio';
+	const brandUrl = (raw) => {
+		const url = new URL(raw);
 		// Couleurs de la marque (prises en compte selon l'offre Calendly).
 		url.searchParams.set('background_color', '000000');
 		url.searchParams.set('text_color', 'f3eee4');
 		url.searchParams.set('primary_color', 'cead6f');
-		calEl.innerHTML = '';
-		const widget = document.createElement('div');
-		widget.className = 'calendly-inline-widget';
-		widget.dataset.url = url.toString();
-		calEl.appendChild(widget);
-		const s = document.createElement('script');
-		s.src = 'https://assets.calendly.com/assets/external/widget.js';
-		s.async = true;
-		document.body.appendChild(s);
+		return url.toString();
 	};
+	let calendlyReady;
+	const loadCalendly = () => {
+		if (!calendlyReady) {
+			calendlyReady = new Promise((resolve, reject) => {
+				const css = document.createElement('link');
+				css.rel = 'stylesheet';
+				css.href = 'https://assets.calendly.com/assets/external/widget.css';
+				document.head.appendChild(css);
+				const s = document.createElement('script');
+				s.src = 'https://assets.calendly.com/assets/external/widget.js';
+				s.async = true;
+				s.onload = resolve;
+				s.onerror = reject;
+				document.body.appendChild(s);
+			});
+			calendlyReady.catch(() => {});
+		}
+		return calendlyReady;
+	};
+	let shownType = null;
+	const showInline = () => {
+		if (!calEl || isMobile.matches || shownType === calType) return;
+		loadCalendly().then(() => {
+			if (shownType === calType || !window.Calendly) return;
+			shownType = calType;
+			calEl.innerHTML = '';
+			window.Calendly.initInlineWidget({url: brandUrl(calUrls[calType]), parentElement: calEl});
+		}).catch(() => {});
+	};
+	const choices = document.querySelectorAll('[data-cal-type]');
+	choices.forEach((btn) =>
+		btn.addEventListener('click', () => {
+			calType = btn.dataset.calType;
+			choices.forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
+			track('booking_type_selected', {booking_type: calType});
+			if (isMobile.matches) {
+				const url = brandUrl(calUrls[calType]);
+				// Si Calendly ne répond pas, on ouvre sa page directement.
+				loadCalendly()
+					.then(() => (window.Calendly ? window.Calendly.initPopupWidget({url}) : location.assign(url)))
+					.catch(() => location.assign(url));
+			} else showInline();
+		}),
+	);
 
 	// Réservation confirmée : la vraie conversion, envoyée à GTM et à Meta.
 	let booked = false;
@@ -212,14 +250,15 @@
 		}
 	});
 
-	// Chargé dès que la page est affichée (sans la ralentir), pour que l'agenda soit prêt
+	// Préchargé dès que la page est affichée (sans la ralentir), pour que l'agenda soit prêt
 	// quand le visiteur arrive en bas. Un clic sur un bouton « Réserver » le lance tout de suite.
 	if (calEl && config.calendlyUrl) {
 		const idle = window.requestIdleCallback || ((cb) => setTimeout(cb, 1));
-		const preload = () => setTimeout(() => idle(loadCalendly), 1200);
+		const preload = () => setTimeout(() => idle(() => (isMobile.matches ? loadCalendly() : showInline())), 1200);
 		if (document.readyState === 'complete') preload();
 		else window.addEventListener('load', preload, {once: true});
-		document.querySelectorAll('a[href="#reserver"]').forEach((a) => a.addEventListener('click', loadCalendly));
+		document.querySelectorAll('a[href="#reserver"]').forEach((a) => a.addEventListener('click', () => (isMobile.matches ? loadCalendly() : showInline())));
+		isMobile.addEventListener?.('change', () => !isMobile.matches && showInline());
 	}
 
 	// ───────── Effets 3D ─────────
