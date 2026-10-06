@@ -14,3 +14,10 @@ AddType font/woff2 .woff2
 <IfModule mod_rewrite.c>
 	RewriteEngine Off
 </IfModule>
+
+# Les pages et le code sont toujours revérifiés : une mise à jour s'affiche tout de suite.
+<IfModule mod_headers.c>
+	<FilesMatch "\.(html|css|js)$">
+		Header set Cache-Control "no-cache"
+	</FilesMatch>
+</IfModule>
