@@ -6,7 +6,7 @@ Page d'arrivée de la publicité YouTube. Site statique (HTML, CSS, JS), aucune 
 landing/
   index.html            # la page
   confidentialite.html  # confidentialité et cookies (à compléter)
-  config.js             # ← vos identifiants : GTM, Pixel Meta, lien Calendly
+  config.js             # ← vos réglages : Google Analytics, Pixel Meta, Calendly, WhatsApp
   styles.css
   main.js               # consentement, mesure, agenda, animation
   assets/               # logo, polices, vidéo de la pub
@@ -14,7 +14,7 @@ landing/
 
 ## Avant la mise en ligne
 
-1. **`config.js`** : renseigner `gtmId` et `metaPixelId` (le lien Calendly est déjà en place).
+1. **`config.js`** : déjà rempli (Google Analytics `G-N8JDCPL434`, Pixel Meta, Calendly, WhatsApp). `gtmId` reste vide tant que vous n'utilisez pas Google Tag Manager.
 2. **`confidentialite.html`** : compléter les passages entre crochets (raison sociale, adresse, e-mail, durée de conservation).
 3. Vérifier le lien des mentions légales (`legalUrl` dans `config.js`).
 
@@ -27,19 +27,19 @@ Envoyer tout le dossier `landing/` à la racine du sous-domaine (par exemple `ap
 
 Tester en local : `cd landing && python3 -m http.server` puis ouvrir http://localhost:8000.
 
-## Mesure (Google Tag Manager + Pixel Meta)
+## Mesure (Google Analytics 4 + Pixel Meta)
 
-- Rien n'est mesuré tant que le visiteur n'a pas cliqué sur « Accepter » (Consent Mode v2 ; le Pixel Meta n'est chargé qu'après accord).
-- Événements envoyés dans le `dataLayer`, à utiliser comme déclencheurs dans GTM :
+- Rien n'est chargé tant que le visiteur n'a pas cliqué sur « Accepter » dans le bandeau cookies : ni Google Analytics, ni le Pixel Meta (aucune requête vers Google ou Meta avant l'accord).
+- Chaque événement ci-dessous est envoyé à Google Analytics 4 (et au `dataLayer`, si GTM est un jour ajouté).
+- **Dans GA4** : Administration → Événements → marquer `booking_confirmed` (et `whatsapp_click`) comme **événements clés**. Ensuite, dans Google Ads, importer ces événements clés comme conversions.
+- **Dans Meta** : la réservation confirmée envoie `Schedule`, le clic WhatsApp envoie `Contact`. Les utiliser comme événements de conversion dans le Gestionnaire de publicités.
 
 | Événement | Quand |
 |---|---|
 | `booking_confirmed` | Rendez-vous confirmé dans Calendly — **la conversion à suivre** |
-| `cta_click` (+ `cta_location`) | Clic sur un bouton « Réserver » (`header`, `hero`, `mobile-bar`…) |
 | `booking_slot_selected` | Créneau choisi dans Calendly (avant confirmation) |
+| `whatsapp_click` | Clic sur le bouton WhatsApp |
+| `cta_click` (+ `cta_location`) | Clic sur un bouton « Réserver » (`header`, `hero`, `about`, `mobile-bar`…) |
 | `proof_view` / `service_tab` | Navigation dans le carrousel des résultats / les onglets des services |
 | `video_play` / `video_complete` | Lecture de la vidéo |
 | `consent_choice` | Choix dans le bandeau cookies |
-
-- Le Pixel Meta reçoit aussi `Schedule` à la réservation confirmée. Pour éviter un double comptage, ne pas recréer cet événement dans GTM.
-- Dans Google Ads, importer `booking_confirmed` comme conversion (via une balise de conversion Google Ads déclenchée par cet événement dans GTM).

@@ -4,7 +4,11 @@
 	const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 	window.dataLayer = window.dataLayer || [];
-	const track = (event, params = {}) => window.dataLayer.push({event, ...params});
+	// Chaque événement part dans le dataLayer (GTM) et, si Google Analytics est chargé, dans GA4.
+	const track = (event, params = {}) => {
+		window.dataLayer.push({event, ...params});
+		if (window.__gaLoaded) window.gtag('event', event, params);
+	};
 
 	// ───────── Mesure : Google Tag Manager (Consent Mode v2) + Pixel Meta ─────────
 	const loadGtm = () => {
@@ -15,6 +19,18 @@
 		s.async = true;
 		s.src = `https://www.googletagmanager.com/gtm.js?id=${encodeURIComponent(config.gtmId)}`;
 		document.head.appendChild(s);
+	};
+
+	// Google Analytics 4 : chargé seulement après accord (aucune requête avant).
+	const loadGa = () => {
+		if (!config.gaId || window.__gaLoaded) return;
+		window.__gaLoaded = true;
+		const s = document.createElement('script');
+		s.async = true;
+		s.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(config.gaId)}`;
+		document.head.appendChild(s);
+		window.gtag('js', new Date());
+		window.gtag('config', config.gaId);
 	};
 
 	const loadMetaPixel = () => {
@@ -34,7 +50,10 @@
 			ad_personalization: value,
 			analytics_storage: value,
 		});
-		if (value === 'granted') loadMetaPixel();
+		if (value === 'granted') {
+			loadGa();
+			loadMetaPixel();
+		}
 		else if (window.fbq) window.fbq('consent', 'revoke');
 	};
 
@@ -60,13 +79,14 @@
 	const mobileCta = document.querySelector('[data-mobile-cta]');
 	const showBanner = () => {
 		banner.hidden = false;
+		document.body.classList.add('consent-open');
 		if (mobileCta) mobileCta.classList.add('is-hidden');
 		banner.querySelector('[data-consent-choice="denied"]').focus({preventScroll: true});
 	};
 
 	const stored = readConsent();
 	if (stored) applyConsent(stored);
-	else if (config.gtmId || config.metaPixelId) showBanner();
+	else if (config.gaId || config.gtmId || config.metaPixelId) showBanner();
 
 	banner.addEventListener('click', (e) => {
 		const btn = e.target.closest('[data-consent-choice]');
@@ -75,9 +95,21 @@
 		saveConsent(choice);
 		applyConsent(choice);
 		banner.hidden = true;
+		document.body.classList.remove('consent-open');
 		track('consent_choice', {consent: choice});
 	});
 	document.querySelector('[data-open-consent]')?.addEventListener('click', showBanner);
+
+	// ───────── Bouton WhatsApp ─────────
+	const wa = document.querySelector('[data-whatsapp]');
+	if (wa && config.whatsapp) {
+		wa.href = `https://wa.me/${config.whatsapp}?text=${encodeURIComponent(config.whatsappMessage || '')}`;
+		wa.hidden = false;
+		wa.addEventListener('click', () => {
+			track('whatsapp_click', {contact_channel: 'whatsapp'});
+			if (window.fbq) window.fbq('track', 'Contact');
+		});
+	}
 
 	// ───────── Liens légaux ─────────
 	if (config.legalUrl) {
