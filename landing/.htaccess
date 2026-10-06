@@ -1,0 +1,16 @@
+# Hébergement Apache (o2switch, OVH, Hostinger…) : à déposer dans le même dossier que index.html.
+
+# Ajoute le « / » final à l'adresse du dossier, sinon les images ne se chargent pas.
+DirectorySlash On
+DirectoryIndex index.html
+
+# Types de fichiers parfois inconnus des anciens serveurs.
+AddType image/webp .webp
+AddType image/svg+xml .svg
+AddType video/mp4 .mp4
+AddType font/woff2 .woff2
+
+# Si le dossier est dans un site WordPress : ne pas laisser WordPress intercepter les fichiers de ce dossier.
+<IfModule mod_rewrite.c>
+	RewriteEngine Off
+</IfModule>

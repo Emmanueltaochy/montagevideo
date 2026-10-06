@@ -2,6 +2,10 @@
 <html lang="fr">
 <head>
 	<meta charset="utf-8">
+	<script>
+		// Ouverte sans « / » final (ex. /dossier au lieu de /dossier/), la page chercherait ses images dans le dossier parent.
+		(function (l) { var last = l.pathname.split('/').pop(); if (last && last.indexOf('.') === -1) l.replace(l.pathname + '/' + l.search + l.hash); })(location);
+	</script>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Plus de clients pour votre commerce à La Réunion | Taochy Agency</title>
 	<meta name="description" content="Site web, réseaux sociaux et publicité pour les commerçants et artisans de La Réunion. Réservez votre appel gratuit et sans engagement.">

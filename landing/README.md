@@ -43,3 +43,8 @@ Tester en local : `cd landing && python3 -m http.server` puis ouvrir http://loca
 | `proof_view` / `service_tab` | Navigation dans le carrousel des résultats / les onglets des services |
 | `video_play` / `video_complete` | Lecture de la vidéo |
 | `consent_choice` | Choix dans le bandeau cookies |
+
+## Les images ne s'affichent pas ?
+
+1. Déposez **tout le contenu** du dossier `landing/`, y compris `assets/` avec ses sous-dossiers (`fonts`, `logos`, `proofs`, `sites`) et le fichier caché `.htaccess`. Les noms doivent rester en minuscules.
+2. Testez une image directement : `https://votre-site/nom-du-dossier/assets/logo.png`. Une erreur 404 veut dire que le fichier n'est pas au bon endroit.
