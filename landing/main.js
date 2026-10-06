@@ -124,7 +124,7 @@
 	video?.addEventListener('play', () => track('video_play', {video: video.dataset.video}), {once: true});
 	video?.addEventListener('ended', () => track('video_complete', {video: video.dataset.video}), {once: true});
 
-	// ───────── Animation de la recherche (une seule fois) ─────────
+	// ───────── Animation de la recherche (une seule fois, quand la carte est vraiment à l'écran) ─────────
 	const demo = document.querySelector('.search-demo');
 	const query = demo?.querySelector('.search-demo__query');
 	if (demo && query && !reduceMotion) {
@@ -132,12 +132,31 @@
 		demo.classList.add('is-armed');
 		query.textContent = '';
 		let i = 0;
+		// Frappe au rythme d'une vraie personne, puis courte pause avant les résultats.
 		const type = () => {
 			query.textContent = text.slice(0, ++i);
-			if (i < text.length) setTimeout(type, 55 + Math.random() * 45);
-			else setTimeout(() => demo.classList.add('is-revealed'), 280);
+			if (i < text.length) setTimeout(type, 110 + Math.random() * 90);
+			else setTimeout(() => demo.classList.add('is-revealed'), 900);
 		};
-		setTimeout(type, 450);
+		let started = false;
+		const start = () => {
+			if (started) return;
+			started = true;
+			setTimeout(type, 700);
+		};
+		// Sur mobile, la carte est sous le titre : on attend qu'elle soit bien visible pour lancer la frappe.
+		if ('IntersectionObserver' in window) {
+			const io = new IntersectionObserver(
+				([e]) => {
+					if (e.isIntersecting) {
+						start();
+						io.disconnect();
+					}
+				},
+				{threshold: 0.6},
+			);
+			io.observe(demo);
+		} else start();
 	}
 
 	// ───────── Barre fixe mobile : visible après le haut de page, cachée sur la réservation ─────────

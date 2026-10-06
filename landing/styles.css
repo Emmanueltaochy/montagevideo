@@ -346,18 +346,18 @@ a {
 .search-demo.is-revealed .result {
 	opacity: 1;
 	transform: translateZ(20px);
-	transition: opacity 420ms var(--ease), transform 520ms var(--ease);
+	transition: opacity 600ms var(--ease), transform 800ms var(--ease);
 }
 .search-demo.is-revealed .result:nth-child(2) {
-	transition-delay: 120ms;
+	transition-delay: 250ms;
 }
 .search-demo.is-revealed .result:nth-child(3) {
-	transition-delay: 220ms;
+	transition-delay: 450ms;
 }
 .search-demo.is-revealed .result--you {
 	transform: translateZ(80px) scale(1.03);
 	background: #17140d;
-	transition-delay: 420ms;
+	transition-delay: 900ms;
 	box-shadow: 0 0 0 1px var(--gold), 0 18px 50px -12px rgba(206, 173, 111, 0.55);
 }
 
