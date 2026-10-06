@@ -6,7 +6,7 @@ Page d'arrivée de la publicité YouTube. Site statique (HTML, CSS, JS), aucune 
 landing/
   index.html            # la page
   confidentialite.html  # confidentialité et cookies (à compléter)
-  config.js             # ← vos identifiants : GTM, Pixel Meta, lien Cal.com
+  config.js             # ← vos identifiants : GTM, Pixel Meta, lien Calendly
   styles.css
   main.js               # consentement, mesure, agenda, animation
   assets/               # logo, polices, vidéo de la pub
@@ -14,7 +14,7 @@ landing/
 
 ## Avant la mise en ligne
 
-1. **`config.js`** : renseigner `gtmId`, `metaPixelId` et `calLink`.
+1. **`config.js`** : renseigner `gtmId` et `metaPixelId` (le lien Calendly est déjà en place).
 2. **`confidentialite.html`** : compléter les passages entre crochets (raison sociale, adresse, e-mail, durée de conservation).
 3. Vérifier le lien des mentions légales (`legalUrl` dans `config.js`).
 
@@ -34,8 +34,9 @@ Tester en local : `cd landing && python3 -m http.server` puis ouvrir http://loca
 
 | Événement | Quand |
 |---|---|
-| `booking_confirmed` | Rendez-vous confirmé dans Cal.com — **la conversion à suivre** |
+| `booking_confirmed` | Rendez-vous confirmé dans Calendly — **la conversion à suivre** |
 | `cta_click` (+ `cta_location`) | Clic sur un bouton « Réserver » (`header`, `hero`, `mobile-bar`…) |
+| `booking_slot_selected` | Créneau choisi dans Calendly (avant confirmation) |
 | `proof_view` / `service_tab` | Navigation dans le carrousel des résultats / les onglets des services |
 | `video_play` / `video_complete` | Lecture de la vidéo |
 | `consent_choice` | Choix dans le bandeau cookies |

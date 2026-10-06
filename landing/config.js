@@ -7,9 +7,8 @@ window.TAOCHY_CONFIG = {
 	gtmId: '',
 	// Pixel Meta (Facebook / Instagram), ex. '123456789012345'
 	metaPixelId: '',
-	// Lien Cal.com de l'événement « appel gratuit », sans https://cal.com/
-	// ex. 'taochy-agency/appel-gratuit'
-	calLink: '',
+	// Page Calendly de l'appel gratuit (intégrée directement dans la landing page)
+	calendlyUrl: 'https://calendly.com/taochyagency/rendez-vous-en-visio',
 	// Page des mentions légales (obligatoire en France)
 	legalUrl: 'https://taochyagency.com/mentions-legales/',
 };

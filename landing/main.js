@@ -128,41 +128,49 @@
 		}).observe(booking);
 	}
 
-	// ───────── Agenda Cal.com (chargé à l'approche de la section) ─────────
+	// ───────── Agenda Calendly (chargé à l'approche de la section) ─────────
 	const calEl = document.getElementById('cal-inline');
-	const loadCal = () => {
-		if (!config.calLink || window.__calLoaded) return;
-		window.__calLoaded = true;
-		/* eslint-disable */
-		(function (C, A, L) { let p = function (a, ar) { a.q.push(ar); }; let d = C.document; C.Cal = C.Cal || function () { let cal = C.Cal; let ar = arguments; if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement("script")).src = A; cal.loaded = true; } if (ar[0] === L) { const api = function () { p(api, arguments); }; const namespace = ar[1]; api.q = api.q || []; if (typeof namespace === "string") { cal.ns[namespace] = cal.ns[namespace] || api; p(cal.ns[namespace], ar); p(cal, ["initNamespace", namespace]); } else p(cal, ar); return; } p(cal, ar); }; })(window, "https://app.cal.com/embed/embed.js", "init");
-		/* eslint-enable */
-		const Cal = window.Cal;
-		Cal('init', 'appel', {origin: 'https://cal.com'});
+	const loadCalendly = () => {
+		if (!config.calendlyUrl || window.__calendlyLoaded) return;
+		window.__calendlyLoaded = true;
+		const url = new URL(config.calendlyUrl);
+		// Couleurs de la marque (prises en compte selon l'offre Calendly).
+		url.searchParams.set('background_color', '000000');
+		url.searchParams.set('text_color', 'f3eee4');
+		url.searchParams.set('primary_color', 'cead6f');
 		calEl.innerHTML = '';
-		Cal.ns.appel('inline', {elementOrSelector: '#cal-inline', calLink: config.calLink, config: {layout: 'month_view', theme: 'dark'}});
-		Cal.ns.appel('ui', {theme: 'dark', cssVarsPerTheme: {dark: {'cal-brand': '#CEAD6F'}}, hideEventTypeDetails: false, layout: 'month_view'});
-
-		// Réservation confirmée : la vraie conversion, envoyée à GTM et à Meta.
-		let sent = false;
-		const onBooked = () => {
-			if (sent) return;
-			sent = true;
-			track('booking_confirmed', {booking_tool: 'cal.com'});
-			if (window.fbq) window.fbq('track', 'Schedule');
-		};
-		Cal.ns.appel('on', {action: 'bookingSuccessfulV2', callback: onBooked});
-		Cal.ns.appel('on', {action: 'bookingSuccessful', callback: onBooked});
+		const widget = document.createElement('div');
+		widget.className = 'calendly-inline-widget';
+		widget.dataset.url = url.toString();
+		calEl.appendChild(widget);
+		const s = document.createElement('script');
+		s.src = 'https://assets.calendly.com/assets/external/widget.js';
+		s.async = true;
+		document.body.appendChild(s);
 	};
-	if (calEl && config.calLink) {
+
+	// Réservation confirmée : la vraie conversion, envoyée à GTM et à Meta.
+	let booked = false;
+	window.addEventListener('message', (e) => {
+		if (e.origin !== 'https://calendly.com' || !e.data || typeof e.data.event !== 'string') return;
+		if (e.data.event === 'calendly.date_and_time_selected') track('booking_slot_selected', {booking_tool: 'calendly'});
+		if (e.data.event === 'calendly.event_scheduled' && !booked) {
+			booked = true;
+			track('booking_confirmed', {booking_tool: 'calendly'});
+			if (window.fbq) window.fbq('track', 'Schedule');
+		}
+	});
+
+	if (calEl && config.calendlyUrl) {
 		if ('IntersectionObserver' in window) {
 			const io = new IntersectionObserver(([e]) => {
 				if (e.isIntersecting) {
-					loadCal();
+					loadCalendly();
 					io.disconnect();
 				}
 			}, {rootMargin: '600px'});
 			io.observe(calEl);
-		} else loadCal();
+		} else loadCalendly();
 	}
 
 	// ───────── Effets 3D ─────────
@@ -211,7 +219,7 @@
 		const slides = [...flow.querySelectorAll('[data-slide]')];
 		const dots = flow.querySelector('[data-dots]');
 		const n = slides.length;
-		let active = Math.floor(n / 2);
+		let active = Number(flow.dataset.start ?? Math.floor(n / 2));
 		const dotButtons = slides.map((slide, i) => {
 			const b = document.createElement('button');
 			b.type = 'button';

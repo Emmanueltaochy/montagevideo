@@ -570,6 +570,64 @@ a {
 	color: var(--muted);
 }
 
+/* Sites réalisés : un mur de téléphones incliné en perspective */
+.sites__wall {
+	list-style: none;
+	margin: 48px 0 0;
+	padding: 0;
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 32px 18px;
+	perspective: 1600px;
+}
+@media (min-width: 860px) {
+	.sites__wall {
+		grid-template-columns: repeat(4, 1fr);
+		gap: 28px;
+		padding-block: 20px 60px;
+		transform-style: preserve-3d;
+		transform: rotateX(16deg) rotateZ(-4deg);
+	}
+	.js .sites__wall[data-reveal] {
+		transform: perspective(1200px) rotateX(40deg) rotateZ(-4deg) translateY(80px);
+	}
+	.js .sites__wall[data-reveal].is-in {
+		transform: rotateX(16deg) rotateZ(-4deg);
+	}
+	.site-card:nth-child(even) {
+		margin-top: 60px;
+	}
+}
+.site-card {
+	transform-style: preserve-3d;
+	transition: transform 450ms var(--ease);
+}
+@media (hover: hover) {
+	.site-card:hover {
+		transform: translateZ(70px) translateY(-10px);
+	}
+}
+.phone--site {
+	aspect-ratio: 540 / 924;
+}
+.site-card__name {
+	margin-top: 16px;
+	font-size: 0.9rem;
+	color: var(--gold-pale);
+}
+.site-card__name strong {
+	display: block;
+	font-family: var(--font-display);
+	font-weight: 800;
+	font-size: 1.05rem;
+	color: var(--paper);
+}
+.site-card__type {
+	margin-top: 2px;
+	font-size: 0.9rem;
+	color: var(--muted);
+}
+
 /* Problème */
 .problem__inner {
 	display: grid;
@@ -1096,6 +1154,10 @@ a {
 	overflow: hidden;
 	text-align: left;
 	display: grid;
+}
+.booking__cal .calendly-inline-widget {
+	min-width: 320px;
+	height: 700px;
 }
 .booking__placeholder {
 	place-self: center;
