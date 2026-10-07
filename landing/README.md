@@ -37,6 +37,7 @@ Tester en local : `cd landing && python3 -m http.server` puis ouvrir http://loca
 | Événement | Quand |
 |---|---|
 | `booking_confirmed` | Rendez-vous confirmé dans Calendly — **la conversion à suivre** |
+| `thank_you_view` | Affichage de la page de remerciement `merci/` |
 | `booking_type_selected` | Choix « En visio » ou « Par téléphone » (paramètre `booking_type` : `visio` ou `phone`) |
 | `booking_slot_selected` | Créneau choisi dans Calendly (avant confirmation) |
 | `whatsapp_click` | Clic sur le bouton WhatsApp |
@@ -49,3 +50,12 @@ Tester en local : `cd landing && python3 -m http.server` puis ouvrir http://loca
 
 1. Déposez **tout le contenu** du dossier `landing/`, y compris `assets/` avec ses sous-dossiers (`fonts`, `logos`, `proofs`, `sites`) et le fichier caché `.htaccess`. Les noms doivent rester en minuscules.
 2. Testez une image directement : `https://votre-site/nom-du-dossier/assets/logo.png`. Une erreur 404 veut dire que le fichier n'est pas au bon endroit.
+
+## Page de remerciement (`merci/`) et conversion Google Ads
+
+Adresse : `https://votre-site/merci/` (dossier `merci/` à déposer avec le reste). Elle n'est pas indexée (`noindex`) et aucune page n'y renvoie.
+
+1. **Calendly** : pour chaque type d'événement (visio et téléphone), Booking page options → Confirmation page → « Redirect to an external site » → coller l'adresse de la page `merci/`.
+2. **Google Ads** : conversion « Envoi de formulaire de lead », chargement de page avec l'URL `merci/`, comptage « Une seule ».
+3. **Balise Google Ads** : si Google Ads fournit un identifiant `AW-…`, le coller dans `adsId` de `config.js`. Il se charge avec Google Analytics, seulement après « Accepter » dans le bandeau cookies.
+4. **Pas de double comptage** : si la réservation a déjà été comptée sur la landing (`booking_confirmed`, `Schedule`), la page merci ne la recompte pas. Elle envoie seulement `thank_you_view`.

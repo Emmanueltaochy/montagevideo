@@ -31,6 +31,8 @@
 		document.head.appendChild(s);
 		window.gtag('js', new Date());
 		window.gtag('config', config.gaId);
+		// Google Ads (balise de conversion) : même script, deuxième configuration.
+		if (config.adsId) window.gtag('config', config.adsId);
 	};
 
 	const loadMetaPixel = () => {
@@ -238,6 +240,31 @@
 		}),
 	);
 
+	// La page « merci » ne recompte pas une réservation déjà envoyée depuis la landing.
+	const BOOKED_KEY = 'taochy-booked';
+	const markBooked = () => {
+		try {
+			sessionStorage.setItem(BOOKED_KEY, '1');
+		} catch {
+			/* sans stockage : la page merci peut recompter, Google Ads ne compte qu'une conversion par clic */
+		}
+	};
+	const alreadyBooked = () => {
+		try {
+			return sessionStorage.getItem(BOOKED_KEY) === '1';
+		} catch {
+			return false;
+		}
+	};
+	if (document.body.dataset.page === 'merci') {
+		track('thank_you_view');
+		if (!alreadyBooked()) {
+			track('booking_confirmed', {booking_tool: 'calendly', source: 'thank_you_page'});
+			if (window.fbq) window.fbq('track', 'Schedule');
+			markBooked();
+		}
+	}
+
 	// Réservation confirmée : la vraie conversion, envoyée à GTM et à Meta.
 	let booked = false;
 	window.addEventListener('message', (e) => {
@@ -247,6 +274,7 @@
 			booked = true;
 			track('booking_confirmed', {booking_tool: 'calendly'});
 			if (window.fbq) window.fbq('track', 'Schedule');
+			markBooked();
 		}
 	});
 

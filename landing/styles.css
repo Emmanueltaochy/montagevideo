@@ -1707,3 +1707,105 @@ a {
 		height: 52px;
 	}
 }
+
+/* ───────── Page de remerciement (merci/) ───────── */
+.thanks {
+	min-height: 70vh;
+	padding-block: clamp(110px, 14vw, 170px) var(--section);
+	background: radial-gradient(60% 50% at 50% 0%, rgba(206, 173, 111, 0.18), transparent 70%);
+}
+.thanks__inner {
+	max-width: 760px;
+	text-align: center;
+}
+.thanks__check {
+	display: grid;
+	place-items: center;
+	width: 84px;
+	height: 84px;
+	margin: 0 auto 28px;
+	border-radius: 50%;
+	background: linear-gradient(180deg, var(--gold-pale), var(--gold));
+	box-shadow: 0 0 0 10px rgba(206, 173, 111, 0.12), 0 20px 60px -10px rgba(206, 173, 111, 0.6);
+	animation: thanks-pop 700ms var(--ease) both;
+}
+.thanks__check svg {
+	fill: none;
+	stroke: var(--black);
+	stroke-width: 2.6;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+	stroke-dasharray: 24;
+	stroke-dashoffset: 24;
+	animation: thanks-draw 500ms 350ms var(--ease) forwards;
+}
+@keyframes thanks-pop {
+	from { transform: scale(0.4); opacity: 0; }
+}
+@keyframes thanks-draw {
+	to { stroke-dashoffset: 0; }
+}
+.thanks__title {
+	font-size: var(--step-hero);
+	font-weight: 900;
+	line-height: 1.02;
+	letter-spacing: -0.035em;
+}
+.thanks__lead {
+	margin-top: 16px;
+	font-size: var(--step-1);
+	color: var(--gold-pale);
+}
+.thanks__steps {
+	list-style: none;
+	margin: 52px 0 0;
+	padding: 0;
+	display: grid;
+	gap: 14px;
+	text-align: left;
+	counter-reset: step;
+}
+.thanks__steps li {
+	position: relative;
+	padding: 22px 24px 22px 76px;
+	border: 1px solid var(--line);
+	border-radius: var(--radius-lg);
+	background: #0e0e0e;
+	color: var(--muted);
+	line-height: 1.5;
+	counter-increment: step;
+}
+.thanks__steps li::before {
+	content: counter(step);
+	position: absolute;
+	left: 22px;
+	top: 20px;
+	display: grid;
+	place-items: center;
+	width: 36px;
+	height: 36px;
+	border-radius: 50%;
+	border: 1px solid var(--gold);
+	font-family: var(--font-display);
+	font-weight: 800;
+	color: var(--gold);
+}
+.thanks__steps strong {
+	display: block;
+	margin-bottom: 4px;
+	font-family: var(--font-display);
+	font-size: 1.1rem;
+	color: var(--paper);
+}
+.thanks__help {
+	margin-top: 36px;
+	color: var(--muted);
+	font-size: 0.95rem;
+}
+@media (prefers-reduced-motion: reduce) {
+	.thanks__check,
+	.thanks__check svg {
+		animation: none;
+		stroke-dashoffset: 0;
+	}
+}

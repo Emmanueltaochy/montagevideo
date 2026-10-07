@@ -7,6 +7,8 @@ window.TAOCHY_CONFIG = {
 	gaId: 'G-N8JDCPL434',
 	// Google Tag Manager (facultatif, si vous passez un jour à GTM), ex. 'GTM-ABC1234'
 	gtmId: '',
+	// Google Ads : identifiant « AW-XXXXXXXXX » de la balise Google Ads (laisser vide si la conversion passe par GA4).
+	adsId: '',
 	// Pixel Meta (Facebook / Instagram)
 	metaPixelId: '1799284954739788',
 	// Numéro WhatsApp au format international, sans + ni espaces
