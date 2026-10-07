@@ -14,8 +14,8 @@
 	<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
 	<link rel="preload" href="../assets/fonts/Montserrat.woff2" as="font" type="font/woff2" crossorigin>
 	<link rel="preload" href="../assets/fonts/Inter.woff2" as="font" type="font/woff2" crossorigin>
-	<link rel="stylesheet" href="../styles.css?v=20261007-1">
-	<script src="../config.js?v=20261007-1"></script>
+	<link rel="stylesheet" href="../styles.css?v=20261007-2">
+	<script src="../config.js?v=20261007-2"></script>
 	<script>
 		document.documentElement.classList.add('js');
 		window.dataLayer = window.dataLayer || [];
@@ -28,7 +28,35 @@
 			wait_for_update: 500
 		});
 	</script>
-	<script src="../main.js?v=20261007-1" defer></script>
+	<!-- Google tag (gtag.js) : balise de base G-N8JDCPL434, chargée seulement si le visiteur a accepté les cookies (comme sur la landing). -->
+	<script>
+		(function () {
+			var consent = null;
+			try { consent = localStorage.getItem('taochy-consent'); } catch (e) {}
+			var id = (window.TAOCHY_CONFIG || {}).gaId;
+			if (consent !== 'granted' || !id) return;
+			gtag('consent', 'update', {
+				ad_storage: 'granted',
+				ad_user_data: 'granted',
+				ad_personalization: 'granted',
+				analytics_storage: 'granted'
+			});
+			var s = document.createElement('script');
+			s.async = true;
+			s.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(id);
+			document.head.appendChild(s);
+			gtag('js', new Date());
+			gtag('config', id);
+			window.__gaLoaded = true;
+		})();
+	</script>
+	<!-- Google tag (gtag.js) event : conversion Google Ads « rendez-vous réservé ». Uniquement sur cette page, jamais sur la landing. -->
+	<script>
+		gtag('event', 'ads_conversion_SUBMIT_LEAD_FORM_1', {
+			// <event_parameters>
+		});
+	</script>
+	<script src="../main.js?v=20261007-2" defer></script>
 </head>
 <body data-page="merci">
 	<header class="topbar">

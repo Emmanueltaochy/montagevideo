@@ -57,5 +57,6 @@ Adresse : `https://votre-site/merci/` (dossier `merci/` à déposer avec le rest
 
 1. **Calendly** : pour chaque type d'événement (visio et téléphone), Booking page options → Confirmation page → « Redirect to an external site » → coller l'adresse de la page `merci/`.
 2. **Google Ads** : conversion « Envoi de formulaire de lead », chargement de page avec l'URL `merci/`, comptage « Une seule ».
-3. **Balise Google Ads** : si Google Ads fournit un identifiant `AW-…`, le coller dans `adsId` de `config.js`. Il se charge avec Google Analytics, seulement après « Accepter » dans le bandeau cookies.
-4. **Pas de double comptage** : si la réservation a déjà été comptée sur la landing (`booking_confirmed`, `Schedule`), la page merci ne la recompte pas. Elle envoie seulement `thank_you_view`.
+3. **Événement de conversion** : `ads_conversion_SUBMIT_LEAD_FORM_1` est dans le `<head>` de `merci/index.html` uniquement, juste après la balise Google de base (G-N8JDCPL434). Il ne doit jamais être ajouté à la landing. Comme le reste de la mesure, il ne part que si le visiteur a accepté les cookies.
+4. **Balise Google Ads** : si Google Ads fournit un identifiant `AW-…`, le coller dans `adsId` de `config.js`. Il se charge avec Google Analytics, seulement après « Accepter » dans le bandeau cookies.
+5. **Pas de double comptage** : si la réservation a déjà été comptée sur la landing (`booking_confirmed`, `Schedule`), la page merci ne la recompte pas. Elle envoie seulement `thank_you_view`.

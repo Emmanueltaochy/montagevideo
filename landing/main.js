@@ -33,6 +33,9 @@
 		window.gtag('config', config.gaId);
 		// Google Ads (balise de conversion) : même script, deuxième configuration.
 		if (config.adsId) window.gtag('config', config.adsId);
+		// Page merci, accord donné sur place : la conversion est renvoyée après la configuration de la balise.
+		// (Google Ads compte une seule conversion par clic : pas de double comptage.)
+		if (document.body.dataset.page === 'merci') window.gtag('event', 'ads_conversion_SUBMIT_LEAD_FORM_1', {});
 	};
 
 	const loadMetaPixel = () => {
