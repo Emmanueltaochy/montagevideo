@@ -525,7 +525,7 @@ const Flash: React.FC = () => {
 	return <AbsoluteFill style={{background: '#fff', opacity: o, mixBlendMode: 'overlay'}} />;
 };
 
-const musicVolume = (f: number) => interpolate(f, [0, 8, TALK - 6, TALK + 10, COMMERCE_DURATION], [0.12, 0.06, 0.06, 0.42, 0.42], clamp);
+const musicVolume = (f: number) => interpolate(f, [0, 8, TALK - 6, TALK + 10, COMMERCE_DURATION], [0.14, 0.14, 0.14, 0.42, 0.42], clamp);
 
 const SFX: {name: string; f: number; v: number}[] = [
 	...MODES.slice(1).map((m) => ({name: 'whoosh', f: at(m.t) - 3, v: 0.14})),
