@@ -93,7 +93,7 @@ const CutFlash: React.FC = () => {
 
 // Musique : plus forte sur le logo, très discrète sous la voix.
 const musicVolume = (f: number) =>
-	interpolate(f, [0, INTRO - 10, INTRO + 6, OUTRO_START - 6, OUTRO_START + 10, PORTAIL_DURATION], [0.55, 0.55, 0.1, 0.1, 0.5, 0.5], clamp);
+	interpolate(f, [0, INTRO - 10, INTRO + 6, OUTRO_START - 6, OUTRO_START + 10, PORTAIL_DURATION], [0.5, 0.5, 0.045, 0.045, 0.45, 0.45], clamp);
 
 const SFX: {name: string; f: number; v: number}[] = [
 	{name: 'shimmer', f: 2, v: 0.35},
