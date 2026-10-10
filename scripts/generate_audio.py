@@ -257,9 +257,10 @@ def music_6s():
 	return mix.render()
 
 
-def music_portail(d=48.0):
-	"""Vidéo d'accueil du portail client : fond musical posé (96 BPM), qui laisse la place à la voix."""
-	beat = 60 / 96
+def music_portail(d=48.0, bpm=96, drive=False):
+	"""Vidéo d'accueil du portail client : fond musical posé (96 BPM), qui laisse la place à la voix.
+	`drive` : version plus rythmée (Reels), grosse caisse sur tous les temps et charleston en doubles croches."""
+	beat = 60 / bpm
 	bar = beat * 4
 	mix = Mix(d)
 	chords = [(45, [57, 60, 64]), (41, [53, 57, 60]), (48, [55, 60, 64]), (43, [55, 59, 62])]  # Am F C G
@@ -276,8 +277,11 @@ def music_portail(d=48.0):
 		if b >= 1:
 			for beat_i in range(4):
 				tb = start + beat_i * beat
-				mix.add(tb, kick(), 0.42 if beat_i in (0, 2) else 0.0)
+				mix.add(tb, kick(), 0.42 if (drive or beat_i in (0, 2)) else 0.0)
 				mix.add(tb + beat / 2, hat(), 0.09, 0.35)
+				if drive:
+					mix.add(tb + beat / 4, hat(), 0.04, -0.3)
+					mix.add(tb + beat * 3 / 4, hat(), 0.04, -0.3)
 				if beat_i == 3:
 					mix.add(tb, clap(), 0.12, 0.1)
 			mix.add(start, bass(root, bar * 0.48), 0.18)
@@ -307,4 +311,5 @@ if __name__ == '__main__':
 	write(os.path.join(ROOT, 'music-30s.wav'), music_30s())
 	write(os.path.join(ROOT, 'music-6s.wav'), music_6s())
 	write(os.path.join(ROOT, 'music-portail.wav'), music_portail())
+	write(os.path.join(ROOT, 'music-commerce.wav'), music_portail(46.0, 112, drive=True))
 	print('ok')
