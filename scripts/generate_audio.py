@@ -257,6 +257,40 @@ def music_6s():
 	return mix.render()
 
 
+def music_portail(d=48.0):
+	"""Vidéo d'accueil du portail client : fond musical posé (96 BPM), qui laisse la place à la voix."""
+	beat = 60 / 96
+	bar = beat * 4
+	mix = Mix(d)
+	chords = [(45, [57, 60, 64]), (41, [53, 57, 60]), (48, [55, 60, 64]), (43, [55, 59, 62])]  # Am F C G
+	nbars = int(np.ceil(d / bar))
+	for b in range(nbars):
+		start = b * bar
+		root, notes = chords[b % 4]
+		mix.add(start, pad(notes, bar + 0.5, 900), 0.12, -0.2)
+		mix.add(start, pad([n + 12 for n in notes], bar + 0.5, 1500), 0.035, 0.3)
+		tones = notes + [notes[0] + 12]
+		for s8 in range(8):
+			if s8 in (0, 3, 5, 6):
+				mix.add(start + s8 * beat / 2, pluck(tones[(s8 + b) % 4] + 12, d=0.5, bright=1700), 0.07, -0.4 if s8 % 2 else 0.4)
+		if b >= 1:
+			for beat_i in range(4):
+				tb = start + beat_i * beat
+				mix.add(tb, kick(), 0.42 if beat_i in (0, 2) else 0.0)
+				mix.add(tb + beat / 2, hat(), 0.09, 0.35)
+				if beat_i == 3:
+					mix.add(tb, clap(), 0.12, 0.1)
+			mix.add(start, bass(root, bar * 0.48), 0.18)
+			mix.add(start + bar / 2, bass(root, bar * 0.45), 0.14)
+	mix.add(0, shimmer(1.6), 0.18)
+	out = mix.render()
+	fi = int(1.0 * SR)
+	out[:fi] *= np.linspace(0, 1, fi)[:, None]
+	fo = int(2.5 * SR)
+	out[-fo:] *= np.linspace(1, 0, fo)[:, None] ** 1.5
+	return out
+
+
 if __name__ == '__main__':
 	sfx = os.path.join(ROOT, 'sfx')
 	for name, x in {
@@ -272,4 +306,5 @@ if __name__ == '__main__':
 		write(os.path.join(sfx, f'{name}.wav'), x)
 	write(os.path.join(ROOT, 'music-30s.wav'), music_30s())
 	write(os.path.join(ROOT, 'music-6s.wav'), music_6s())
+	write(os.path.join(ROOT, 'music-portail.wav'), music_portail())
 	print('ok')
