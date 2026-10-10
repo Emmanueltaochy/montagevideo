@@ -350,7 +350,7 @@ const LowerThird: React.FC = () => {
 	const a = spring({frame: frame - at(5.35), fps, config: {damping: 16}});
 	const b = spring({frame: frame - at(7.7), fps, config: {damping: 16}});
 	return (
-		<div style={{position: 'absolute', left: 120, bottom: 120, opacity: leave, fontFamily: TITLE_FONT}}>
+		<div style={{position: 'absolute', left: 120, bottom: 120, opacity: leave, fontFamily: TITLE_FONT, display: 'flex', flexDirection: 'column', alignItems: 'flex-start'}}>
 			<div
 				style={{
 					display: 'inline-block',
