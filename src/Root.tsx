@@ -6,6 +6,8 @@ import {AI_DURATION, TaochyAI30s} from './TaochyAI30s';
 import {BUMPER_DURATION, TaochyBumper6s} from './TaochyBumper6s';
 import {CommerceReel} from './commerce/CommerceReel';
 import {COMMERCE_DURATION} from './commerce/timing';
+import {CommerceReelV2} from './commerce2/CommerceReelV2';
+import {COMMERCE2_DURATION} from './commerce2/timing';
 import {PORTAIL_DURATION} from './portail/timing';
 import {TaochyPortail} from './portail/TaochyPortail';
 import {REEL, VIDEO} from './theme';
@@ -69,6 +71,14 @@ export const RemotionRoot: React.FC = () => (
 			id="TaochyCommerceReel"
 			component={CommerceReel}
 			durationInFrames={COMMERCE_DURATION}
+			fps={VIDEO.fps}
+			width={REEL.width}
+			height={REEL.height}
+		/>
+		<Composition
+			id="TaochyCommerceReelV2"
+			component={CommerceReelV2}
+			durationInFrames={COMMERCE2_DURATION}
 			fps={VIDEO.fps}
 			width={REEL.width}
 			height={REEL.height}
