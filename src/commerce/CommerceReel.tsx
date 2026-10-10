@@ -2,7 +2,7 @@ import React from 'react';
 import {AbsoluteFill, Audio, interpolate, OffthreadVideo, Sequence, spring, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
 import {Logo} from '../components/Logo';
 import {PortalIcon, type PIcon} from '../portail/icons';
-import {BODY_FONT, COLORS, GOLD_GRADIENT, TITLE_FONT} from '../theme';
+import {BODY_FONT, COLORS, GOLD_GRADIENT, SERIF_FONT, TITLE_FONT} from '../theme';
 import {pop} from '../visuals/pop';
 import {CAPTIONS} from './captions';
 import {at, COMMERCE_DURATION, JUMP_CUTS, MODES, modeAt, SAFE, TALK} from './timing';
@@ -66,9 +66,9 @@ const Presenter: React.FC = () => {
 
 // ───────── Vidéo d'illustration plein écran ─────────
 const FULL_TEXT: Record<string, {text: string; from: number}> = {
-	crowd: {text: 'LE PASSAGE', from: 4.38},
-	street: {text: 'LE PASSAGE', from: 12.32},
-	phone: {text: "L'outil ultime ?", from: 22.6},
+	crowd: {text: 'LE PASSAGE', from: 2.42},
+	street: {text: 'LE PASSAGE', from: 9.52},
+	phone: {text: "L'outil ultime ?", from: 17.6},
 };
 const FullClip: React.FC = () => {
 	const frame = useCurrentFrame();
@@ -304,17 +304,17 @@ const Card: React.FC = () => {
 					</Frame3D>
 				);
 			case 'boutique': {
-				const office = frame >= at(7.42);
+				const office = frame >= at(5.2);
 				return (
-					<Frame3D start={start} label={office ? <Chip key="b" text="Un bureau" icon="folder" at={at(7.42)} gold /> : <Chip key="m" text="Un magasin" icon="cart" at={at(6.8)} gold />}>
-						{office ? <ClipFill name="office" from={at(7.42)} dur={end - at(7.42)} /> : <ClipFill name="boutique" from={start} dur={at(7.42) - start} />}
+					<Frame3D start={start} label={office ? <Chip key="b" text="Un bureau" icon="folder" at={at(5.2)} gold /> : <Chip key="m" text="Un magasin" icon="cart" at={at(4.7)} gold />}>
+						{office ? <ClipFill name="office" from={at(5.2)} dur={end - at(5.2)} /> : <ClipFill name="boutique" from={start} dur={at(5.2) - start} />}
 					</Frame3D>
 				);
 			}
 			case 'empty': {
 				const g = interpolate(frame, [start, start + 12], [0, 1], clamp);
 				return (
-					<Frame3D start={start} label={<Chip text="Votre offre = 0" icon="eyeOff" at={at(11.6)} />}>
+					<Frame3D start={start} label={<Chip text="Votre offre = 0" icon="eyeOff" at={at(8.8)} />}>
 						<ClipFill name="empty" from={start} dur={dur} grey={g} />
 						<AbsoluteFill style={{justifyContent: 'center', alignItems: 'center'}}>
 							<div style={{fontFamily: TITLE_FONT, fontWeight: 900, fontSize: 200, color: COLORS.white, opacity: g, textShadow: '0 10px 40px rgba(0,0,0,0.8)'}}>0</div>
@@ -324,45 +324,45 @@ const Card: React.FC = () => {
 				);
 			}
 			case 'worker': {
-				const brand = frame >= at(17.2);
-				const g = interpolate(frame, [at(18.4), at(18.9)], [0, 1], clamp);
+				const brand = frame >= at(12.167);
+				const g = interpolate(frame, [at(13.4), at(13.9)], [0, 1], clamp);
 				return (
 					<Frame3D
 						start={start}
 						label={
 							g > 0.5 ? (
-								<Chip key="n" text="Personne ne vous voit" icon="eyeOff" at={at(18.5)} />
+								<Chip key="n" text="Personne ne vous voit" icon="eyeOff" at={at(13.5)} />
 							) : brand ? (
-								<Chip key="b" text="La meilleure image de marque" icon="star" at={at(17.48)} gold />
+								<Chip key="b" text="La meilleure image de marque" icon="star" at={at(12.48)} gold />
 							) : (
-								<Chip key="p" text="Le meilleur produit" icon="star" at={at(14.62)} gold />
+								<Chip key="p" text="Le meilleur produit" icon="star" at={at(11.26)} gold />
 							)
 						}
 					>
-						{brand ? <ClipFill name="brand" from={at(17.2)} dur={end - at(17.2)} grey={g} /> : <ClipFill name="worker" from={start} dur={at(17.2) - start} />}
+						{brand ? <ClipFill name="brand" from={at(12.167)} dur={end - at(12.167)} grey={g} /> : <ClipFill name="worker" from={start} dur={at(12.167) - start} />}
 					</Frame3D>
 				);
 			}
 			case 'laptop':
 				return (
-					<Frame3D start={start} label={<Chip text="Un site internet" icon="home" at={at(20.4)} gold />}>
+					<Frame3D start={start} label={<Chip text="Un site internet" icon="home" at={at(15.38)} gold />}>
 						<ClipFill name="laptop" from={start} dur={dur} />
 					</Frame3D>
 				);
 			case 'site0':
 				return (
-					<Frame3D start={start} label={<Chip text="Invisible = inutile" icon="eyeOff" at={at(28.7)} />}>
+					<Frame3D start={start} label={<Chip text="Invisible = inutile" icon="eyeOff" at={at(23.7)} />}>
 						<SiteMock visitors={0} />
 					</Frame3D>
 				);
 			case 'convert':
 				return (
 					<Frame3D start={start} label={<Chip text="1 · Un site qui convertit" at={start + 4} gold />}>
-						<SiteMock visitors={0} button={{at: at(32.5)}} />
+						<SiteMock visitors={0} button={{at: at(27.2)}} />
 					</Frame3D>
 				);
 			case 'traffic': {
-				const n = Math.round(interpolate(frame, [at(34.4), at(35.1)], [0, 1240], clamp));
+				const n = Math.round(interpolate(frame, [at(28.9), at(29.75)], [0, 1240], clamp));
 				return (
 					<Frame3D start={start} label={<Chip text="2 · Du trafic" icon="users" at={start + 4} gold />}>
 						<ClipFill name="mall" from={start} dur={dur} />
@@ -374,12 +374,12 @@ const Card: React.FC = () => {
 			}
 			case 'leads':
 				return (
-					<Frame3D start={start} label={<Chip text="Devis & ventes" icon="chart" at={at(37.3)} gold />}>
+					<Frame3D start={start} label={<Chip text="Devis & ventes" icon="chart" at={at(32.0)} gold />}>
 						<ClipFill name="cashier" from={start} dur={dur} />
 						<AbsoluteFill style={{background: 'rgba(0,0,0,0.25)'}} />
-						<Notif icon="users" text="Nouveau visiteur" at={at(36.2)} i={0} />
-						<Notif icon="doc" text="Nouvelle demande de devis" at={at(38.3)} i={1} />
-						<Notif icon="cart" text="Nouvelle vente" at={at(39.5)} i={2} />
+						<Notif icon="users" text="Nouveau visiteur" at={at(30.88)} i={0} />
+						<Notif icon="doc" text="Nouvelle demande de devis" at={at(33.0)} i={1} />
+						<Notif icon="cart" text="Nouvelle vente" at={at(34.2)} i={2} />
 					</Frame3D>
 				);
 			default:
@@ -394,11 +394,11 @@ const TalkText: React.FC = () => {
 	const frame = useCurrentFrame();
 	const {fps} = useVideoConfig();
 	const items = [
-		{from: 0.3, to: 2.6, top: 1010, node: <Chip text="Commerce physique ?" icon="cart" at={at(0.3)} gold />},
-		{from: 8.8, to: 10.1, top: 1010, node: <Chip text="Visible par personne" icon="eyeOff" at={at(8.8)} />},
-		{from: 25.5, to: 26.93, top: 1010, node: <Chip text="Site internet = magasin" icon="home" at={at(25.5)} gold />},
+		{from: 0, to: 2.167, top: 1010, node: <Chip text="Commerce physique ?" icon="cart" at={-8} gold />},
+		{from: 6.9, to: 8.0, top: 1010, node: <Chip text="Visible par personne" icon="eyeOff" at={at(6.9)} />},
+		{from: 20.9, to: 21.9, top: 1010, node: <Chip text="Site internet = magasin" icon="home" at={at(20.9)} gold />},
 	];
-	const logo = spring({frame: frame - at(29.9), fps, config: {damping: 13}});
+	const logo = spring({frame: frame - at(24.8), fps, config: {damping: 13}});
 	return (
 		<>
 			{items.map((it, i) =>
@@ -408,7 +408,7 @@ const TalkText: React.FC = () => {
 					</div>
 				) : null,
 			)}
-			{frame >= at(29.9) && frame < at(31.5) && (
+			{frame >= at(24.8) && frame < at(26.2) && (
 				<div style={{position: 'absolute', top: 960, left: 0, right: 0, display: 'flex', justifyContent: 'center', perspective: 1400}}>
 					<div
 						style={{
@@ -417,11 +417,11 @@ const TalkText: React.FC = () => {
 							background: 'rgba(8,8,8,0.9)',
 							border: '2px solid rgba(206,173,111,0.7)',
 							transform: `rotateY(${(1 - logo) * 80}deg) scale(${0.7 + 0.3 * logo})`,
-							opacity: Math.min(1, logo * 1.5) * interpolate(frame, [at(31.5) - 5, at(31.5)], [1, 0], clamp),
+							opacity: Math.min(1, logo * 1.5) * interpolate(frame, [at(26.2) - 5, at(26.2)], [1, 0], clamp),
 							boxShadow: '0 0 60px -10px rgba(206,173,111,0.6)',
 						}}
 					>
-						<Logo width={520} shineStart={at(30.1)} />
+						<Logo width={520} shineStart={at(25.0)} />
 					</div>
 				</div>
 			)}
@@ -447,12 +447,11 @@ const Captions: React.FC = () => {
 					flexWrap: 'wrap',
 					justifyContent: 'center',
 					gap: '0 18px',
-					fontFamily: TITLE_FONT,
-					fontWeight: 900,
-					fontSize: 74,
+					fontFamily: SERIF_FONT,
+					fontWeight: 800,
+					fontSize: 80,
 					lineHeight: 1.1,
-					textTransform: 'uppercase',
-					letterSpacing: -1,
+					letterSpacing: -0.5,
 					transform: `scale(${0.85 + 0.15 * enter}) translateY(${(1 - enter) * 20}px)`,
 					WebkitTextStroke: '2px rgba(0,0,0,0.6)',
 					textShadow: '0 6px 0 rgba(0,0,0,0.55), 0 10px 40px rgba(0,0,0,0.75)',
@@ -531,21 +530,21 @@ const musicVolume = (f: number) => interpolate(f, [0, 8, TALK - 6, TALK + 10, CO
 
 const SFX: {name: string; f: number; v: number}[] = [
 	...MODES.slice(1).map((m) => ({name: 'whoosh', f: at(m.t) - 3, v: 0.14})),
-	{name: 'pop', f: at(0.3), v: 0.16},
-	{name: 'pop', f: at(6.8), v: 0.14},
-	{name: 'pop', f: at(7.42), v: 0.14},
-	{name: 'impact', f: at(11.9), v: 0.18},
-	{name: 'pop', f: at(14.62), v: 0.14},
-	{name: 'pop', f: at(17.48), v: 0.14},
-	{name: 'impact', f: at(19.9), v: 0.16},
-	{name: 'typing', f: at(20.3), v: 0.12},
-	{name: 'impact', f: at(28.7), v: 0.16},
-	{name: 'shimmer', f: at(29.9), v: 0.2},
-	{name: 'click', f: at(32.5), v: 0.3},
-	{name: 'riser', f: at(33.6), v: 0.12},
-	{name: 'pop-high', f: at(36.2), v: 0.18},
-	{name: 'pop-high', f: at(38.3), v: 0.18},
-	{name: 'pop-high', f: at(39.5), v: 0.18},
+	{name: 'pop', f: 1, v: 0.16},
+	{name: 'pop', f: at(4.7), v: 0.14},
+	{name: 'pop', f: at(5.2), v: 0.14},
+	{name: 'impact', f: at(9.1), v: 0.18},
+	{name: 'pop', f: at(11.26), v: 0.14},
+	{name: 'pop', f: at(12.48), v: 0.14},
+	{name: 'impact', f: at(14.95), v: 0.16},
+	{name: 'typing', f: at(15.3), v: 0.12},
+	{name: 'impact', f: at(23.7), v: 0.16},
+	{name: 'shimmer', f: at(24.8), v: 0.2},
+	{name: 'click', f: at(27.2), v: 0.3},
+	{name: 'riser', f: at(28.3), v: 0.12},
+	{name: 'pop-high', f: at(30.88), v: 0.18},
+	{name: 'pop-high', f: at(33.0), v: 0.18},
+	{name: 'pop-high', f: at(34.2), v: 0.18},
 	{name: 'shimmer', f: TALK + 4, v: 0.25},
 ];
 

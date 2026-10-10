@@ -2,7 +2,7 @@
 // Les temps « t » sont en secondes dans la prise montée ; la voix démarre à l'image 0.
 
 export const FPS = 30;
-export const TALK = 1188; // 39,6 s de prise montée
+export const TALK = 1029; // 34,3 s de prise montée
 export const OUTRO = 105; // appel à l'action final
 export const COMMERCE_DURATION = TALK + OUTRO;
 export const at = (t: number) => Math.round(t * FPS);
@@ -11,26 +11,25 @@ export const at = (t: number) => Math.round(t * FPS);
 // ou une vidéo d'illustration plein écran (full).
 export type Mode = {t: number; mode: 'talk' | 'split' | 'full'; scale?: number; card?: string; clip?: string};
 export const MODES: Mode[] = [
-	{t: 0, mode: 'talk', scale: 1},
-	{t: 2.6, mode: 'split', card: 'shop'},
-	{t: 4.13, mode: 'full', clip: 'crowd'},
-	{t: 5.33, mode: 'split', card: 'boutique'},
-	{t: 7.9, mode: 'talk', scale: 1.15},
-	{t: 10.1, mode: 'split', card: 'empty'},
-	{t: 12.3, mode: 'full', clip: 'street'},
-	{t: 13.13, mode: 'split', card: 'worker'},
-	{t: 20.2, mode: 'split', card: 'laptop'},
-	{t: 21.8, mode: 'full', clip: 'phone'},
-	{t: 24.73, mode: 'talk', scale: 1},
-	{t: 26.93, mode: 'split', card: 'site0'},
-	{t: 29.57, mode: 'talk', scale: 1.15},
-	{t: 31.5, mode: 'split', card: 'convert'},
-	{t: 32.97, mode: 'split', card: 'traffic'},
-	{t: 35.13, mode: 'split', card: 'leads'},
+	{t: 0, mode: 'talk', scale: 1}, // « Qu'est-ce qui fait qu'un commerce physique fonctionne ? »
+	{t: 2.167, mode: 'full', clip: 'crowd'}, // « Ouais, le passage. »
+	{t: 3.333, mode: 'split', card: 'boutique'}, // « un magasin, un bureau »
+	{t: 5.867, mode: 'talk', scale: 1.15}, // « s'il n'est pas visible par personne »
+	{t: 8.0, mode: 'split', card: 'empty'}, // « votre offre ne vaut rien »
+	{t: 9.467, mode: 'full', clip: 'street'}, // « Le passage. »
+	{t: 10.233, mode: 'split', card: 'worker'}, // « le meilleur produit, la meilleure image de marque »
+	{t: 15.167, mode: 'split', card: 'laptop'}, // « Un site internet, c'est la même chose »
+	{t: 16.8, mode: 'full', clip: 'phone'}, // « l'outil ultime pour faire plus de ventes »
+	{t: 19.7, mode: 'talk', scale: 1}, // « c'est comme un magasin »
+	{t: 21.9, mode: 'split', card: 'site0'}, // « s'il n'est pas visible, il ne sert à rien »
+	{t: 24.533, mode: 'talk', scale: 1.15}, // « Chez Taochy Agency »
+	{t: 26.2, mode: 'split', card: 'convert'}, // « 1, faire un site qui convertit »
+	{t: 27.667, mode: 'split', card: 'traffic'}, // « 2, qu'il y ait du trafic »
+	{t: 29.833, mode: 'split', card: 'leads'}, // « des demandes de devis ou des ventes »
 ];
 
 // Raccords de la prise (silences retirés) : petit recadrage pour masquer le saut.
-export const JUMP_CUTS = [1.933, 4.5, 6.733, 8.033, 10.167, 14.267, 15.233, 17.2, 18.267, 19.267, 21.0, 23.8, 25.2, 28.033, 29.833, 37.933];
+export const JUMP_CUTS = [4.567, 12.167, 13.233, 14.233, 20.167, 23.0, 32.633];
 
 export const modeAt = (frame: number) => {
 	let i = 0;

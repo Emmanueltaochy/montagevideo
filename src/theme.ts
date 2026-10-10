@@ -26,9 +26,13 @@ export const CONTENT_HEIGHT = VIDEO.height - SAFE_BOTTOM;
 // Polices intégrées au projet (public/fonts) : le rendu fonctionne même hors ligne.
 export const TITLE_FONT = 'Montserrat';
 export const BODY_FONT = 'Inter';
+// Charte Taochy : sous-titres en Playfair Display.
+export const SERIF_FONT = 'Playfair Display';
 
 loadFont({family: TITLE_FONT, url: staticFile('fonts/Montserrat.woff2'), weight: '700 900'});
 loadFont({family: BODY_FONT, url: staticFile('fonts/Inter.woff2'), weight: '400 700'});
+loadFont({family: SERIF_FONT, url: staticFile('fonts/PlayfairDisplay.woff2'), weight: '400 900'});
+loadFont({family: SERIF_FONT, url: staticFile('fonts/PlayfairDisplay-Italic.woff2'), weight: '400 900', style: 'italic'});
 
 // Format vertical (Reels Instagram) : zones à laisser libres pour l'interface d'Instagram.
 export const REEL = {width: 1080, height: 1920};
