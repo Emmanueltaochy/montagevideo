@@ -21,8 +21,17 @@ const Office: React.FC = () => (
 );
 
 // ───────── La personne détourée, cadrée selon la mise en page (transitions en douceur) ─────────
-const layoutOf = (m: (typeof MODES)[number]) =>
-	m.mode === 'split' ? {scale: 0.84, y: 150, o: 1} : m.mode === 'full' ? {scale: 1.1, y: 0, o: 0} : {scale: m.scale ?? 1, y: 0, o: 1};
+// Haut de la tête à ~260 px dans la prise. La personne reste assez grande pour que les bords
+// de la prise sortent toujours de l'image ; en « split », elle descend sous la fenêtre vidéo.
+const BASE = 1.14;
+const HEAD = 260;
+const layoutOf = (m: (typeof MODES)[number]) => {
+	if (m.mode === 'split') return {scale: BASE, y: 790 - (1920 - (1920 - HEAD) * BASE), o: 1};
+	if (m.mode === 'full') return {scale: BASE * 1.1, y: 0, o: 0};
+	const sc = BASE * (m.scale ?? 1);
+	return {scale: sc, y: 300 - (1920 - (1920 - HEAD) * sc), o: 1};
+};
+const OFFSET_X = -70; // la personne est un peu à droite dans la prise
 
 const Presenter: React.FC = () => {
 	const frame = useCurrentFrame();
@@ -32,13 +41,13 @@ const Presenter: React.FC = () => {
 	const cur = layoutOf(m);
 	const k = index === 0 ? 1 : spring({frame: frame - start, fps, config: {damping: 18, stiffness: 140}});
 	const jumps = JUMP_CUTS.filter((t) => at(t) <= frame).length;
-	const zoom = jumps % 2 ? 1.05 : 1;
+	const zoom = jumps % 2 ? (m.mode === 'split' ? 1.02 : 1.05) : 1;
 	const scale = (prev.scale + (cur.scale - prev.scale) * k) * zoom;
 	const y = prev.y + (cur.y - prev.y) * k;
 	const o = cur.o === 0 ? 0 : prev.o === 0 ? Math.min(1, k * 2) : 1;
 	const exit = interpolate(frame, [TALK - 6, TALK + 10], [1, 0], clamp);
 	return (
-		<AbsoluteFill style={{opacity: o * exit, transform: `translateY(${y}px) scale(${scale})`, transformOrigin: '50% 100%'}}>
+		<AbsoluteFill style={{opacity: o * exit, transform: `translate(${OFFSET_X}px, ${y}px) scale(${scale})`, transformOrigin: '50% 100%'}}>
 			<Sequence durationInFrames={TALK} layout="none">
 				<OffthreadVideo
 					src={staticFile('commerce/presenter.webm')}
@@ -59,7 +68,6 @@ const Presenter: React.FC = () => {
 const FULL_TEXT: Record<string, {text: string; from: number}> = {
 	crowd: {text: 'LE PASSAGE', from: 4.38},
 	street: {text: 'LE PASSAGE', from: 12.32},
-	laptop: {text: 'Un site internet ?', from: 20.36},
 	phone: {text: "L'outil ultime ?", from: 22.6},
 };
 const FullClip: React.FC = () => {
@@ -83,7 +91,8 @@ const FullClip: React.FC = () => {
 						style={{
 							fontFamily: TITLE_FONT,
 							fontWeight: 900,
-							fontSize: txt.text.length > 12 ? 104 : 150,
+							fontSize: txt.text.length > 12 ? 96 : 150,
+							whiteSpace: 'nowrap',
 							letterSpacing: -2,
 							color: COLORS.white,
 							textAlign: 'center',
@@ -108,7 +117,7 @@ const FullClip: React.FC = () => {
 };
 
 // ───────── Fenêtres 3D au-dessus de la personne ─────────
-const CARD = {x: 90, y: 380, w: 900, h: 506};
+const CARD = {x: 90, y: 400, w: 900, h: 380};
 
 const Chip: React.FC<{text: string; icon?: PIcon; at: number; gold?: boolean}> = ({text, icon, at: f, gold}) => {
 	const frame = useCurrentFrame();
@@ -163,7 +172,7 @@ const Frame3D: React.FC<{start: number; children: React.ReactNode; label?: React
 			>
 				{children}
 			</div>
-			{label && <div style={{position: 'absolute', left: 30, bottom: -36, display: 'flex', gap: 12}}>{label}</div>}
+			{label && <div style={{position: 'absolute', left: 30, top: -38, display: 'flex', gap: 12}}>{label}</div>}
 		</div>
 	);
 };
@@ -180,7 +189,7 @@ const SiteMock: React.FC<{visitors: number; button?: {at: number}}> = ({visitors
 	const {fps} = useVideoConfig();
 	const click = button ? spring({frame: frame - button.at, fps, config: {damping: 12}}) : 0;
 	const cx = button ? interpolate(frame, [button.at - 24, button.at - 2], [820, 455], clamp) : 0;
-	const cy = button ? interpolate(frame, [button.at - 24, button.at - 2], [480, 395], clamp) : 0;
+	const cy = button ? interpolate(frame, [button.at - 24, button.at - 2], [330, 262], clamp) : 0;
 	return (
 		<AbsoluteFill style={{background: '#f6f2ea', fontFamily: BODY_FONT}}>
 			<div style={{height: 50, background: '#e8e1d3', display: 'flex', alignItems: 'center', gap: 10, padding: '0 20px'}}>
@@ -192,7 +201,7 @@ const SiteMock: React.FC<{visitors: number; button?: {at: number}}> = ({visitors
 			<div style={{height: 46, backgroundImage: 'repeating-linear-gradient(90deg, #0b0b0b 0 60px, #cead6f 60px 120px)', borderBottomLeftRadius: 30, borderBottomRightRadius: 30}} />
 			<div style={{display: 'flex', gap: 20, padding: '26px 34px'}}>
 				{[0, 1, 2].map((i) => (
-					<div key={i} style={{flex: 1, height: 170, borderRadius: 18, background: `linear-gradient(160deg, #e0d4bd, #c9b58e)`, display: 'grid', placeItems: 'center'}}>
+					<div key={i} style={{flex: 1, height: 150, borderRadius: 18, background: `linear-gradient(160deg, #e0d4bd, #c9b58e)`, display: 'grid', placeItems: 'center'}}>
 						<PortalIcon name="cart" size={56} color="#6b5a39" />
 					</div>
 				))}
@@ -202,7 +211,7 @@ const SiteMock: React.FC<{visitors: number; button?: {at: number}}> = ({visitors
 					style={{
 						position: 'absolute',
 						left: 300,
-						top: 360,
+						top: 230,
 						padding: '18px 40px',
 						borderRadius: 16,
 						background: GOLD_GRADIENT,
@@ -256,11 +265,11 @@ const Notif: React.FC<{icon: PIcon; text: string; at: number; i: number}> = ({ic
 				position: 'absolute',
 				left: 40,
 				right: 40,
-				top: 40 + i * 120,
+				top: 16 + i * 116,
 				display: 'flex',
 				alignItems: 'center',
 				gap: 18,
-				padding: '18px 24px',
+				padding: '12px 22px',
 				borderRadius: 22,
 				background: 'rgba(250,247,240,0.96)',
 				boxShadow: '0 20px 40px -10px rgba(0,0,0,0.6)',
@@ -334,6 +343,12 @@ const Card: React.FC = () => {
 					</Frame3D>
 				);
 			}
+			case 'laptop':
+				return (
+					<Frame3D start={start} label={<Chip text="Un site internet" icon="home" at={at(20.4)} gold />}>
+						<ClipFill name="laptop" from={start} dur={dur} />
+					</Frame3D>
+				);
 			case 'site0':
 				return (
 					<Frame3D start={start} label={<Chip text="Invisible = inutile" icon="eyeOff" at={at(28.7)} />}>
@@ -421,9 +436,11 @@ const Captions: React.FC = () => {
 	const t = frame / fps;
 	const g = CAPTIONS.find((grp, i) => t >= grp[0].s - 0.05 && (i + 1 >= CAPTIONS.length || t < CAPTIONS[i + 1][0].s - 0.05) && t < grp[grp.length - 1].e + 0.6);
 	if (!g || frame >= TALK) return null;
+	const {m} = modeAt(frame);
+	if (m.mode === 'full' && m.clip && FULL_TEXT[m.clip] && frame >= at(FULL_TEXT[m.clip].from)) return null;
 	const enter = spring({frame: frame - Math.round((g[0].s - 0.05) * fps), fps, config: {damping: 14, stiffness: 200}});
 	return (
-		<div style={{position: 'absolute', left: SAFE.side, right: SAFE.side, top: 1110, display: 'flex', justifyContent: 'center'}}>
+		<div style={{position: 'absolute', left: SAFE.side, right: SAFE.side, top: m.mode === 'split' ? 640 : 1110, display: 'flex', justifyContent: 'center'}}>
 			<div
 				style={{
 					display: 'flex',
